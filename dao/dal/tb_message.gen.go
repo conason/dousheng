@@ -29,7 +29,7 @@ func newMessage(db *gorm.DB, opts ...gen.DOOption) message {
 	_message.MessageID = field.NewInt64(tableName, "message_id")
 	_message.ToUserID = field.NewInt64(tableName, "to_user_id")
 	_message.FromUserID = field.NewInt64(tableName, "from_user_id")
-	_message.Content = field.NewInt32(tableName, "content")
+	_message.Content = field.NewString(tableName, "content")
 	_message.CreateTime = field.NewTime(tableName, "create_time")
 
 	_message.fillFieldMap()
@@ -41,11 +41,11 @@ type message struct {
 	messageDo
 
 	ALL        field.Asterisk
-	MessageID  field.Int64 // 消息id
-	ToUserID   field.Int64 // 接收方id
-	FromUserID field.Int64 // 发送方id
-	Content    field.Int32 // 消息内容
-	CreateTime field.Time  // 创建时间
+	MessageID  field.Int64  // 消息id
+	ToUserID   field.Int64  // 接收方id
+	FromUserID field.Int64  // 发送方id
+	Content    field.String // 消息内容
+	CreateTime field.Time   // 创建时间
 
 	fieldMap map[string]field.Expr
 }
@@ -65,7 +65,7 @@ func (m *message) updateTableName(table string) *message {
 	m.MessageID = field.NewInt64(table, "message_id")
 	m.ToUserID = field.NewInt64(table, "to_user_id")
 	m.FromUserID = field.NewInt64(table, "from_user_id")
-	m.Content = field.NewInt32(table, "content")
+	m.Content = field.NewString(table, "content")
 	m.CreateTime = field.NewTime(table, "create_time")
 
 	m.fillFieldMap()

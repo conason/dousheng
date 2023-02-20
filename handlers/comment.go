@@ -103,6 +103,7 @@ func UserCommentList(ctx *gin.Context) {
 			StatusMsg:   "user not logged in",
 			CommentList: nil,
 		})
+		return
 	}
 	userid, err := strconv.ParseInt(userId.(string), 10, 64)
 	if err != nil {
@@ -111,6 +112,7 @@ func UserCommentList(ctx *gin.Context) {
 			StatusMsg:   "invalid userId",
 			CommentList: nil,
 		})
+		return
 	}
 
 	userCommentList, err := serviceImpl.GetUserCommentList(userid)
@@ -120,6 +122,7 @@ func UserCommentList(ctx *gin.Context) {
 			StatusMsg:   err.Error(),
 			CommentList: nil,
 		})
+		return
 	}
 	ctx.JSON(http.StatusOK, DouyinCommentListResponse{
 		StatusCode:  0,
@@ -138,6 +141,7 @@ func VideoCommentList(ctx *gin.Context) {
 			StatusMsg:   "invalid videoId",
 			CommentList: nil,
 		})
+		return
 	}
 	commentList, err := serviceImpl.GetVideoCommentList(videoid)
 	if err != nil {
@@ -146,6 +150,7 @@ func VideoCommentList(ctx *gin.Context) {
 			StatusMsg:   err.Error(),
 			CommentList: nil,
 		})
+		return
 	}
 	ctx.JSON(http.StatusOK, DouyinCommentListResponse{
 		StatusCode:  0,

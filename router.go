@@ -20,7 +20,7 @@ func InitRouter(r *gin.Engine) {
 	//publish
 	publish := douying.Group("/publish")
 	publish.POST("/action/", handlers.VideoPublish)
-	publish.POST("/list/", handlers.PublishList)
+	publish.GET("/list/", handlers.PublishList)
 
 	//fav
 	fav := douying.Group("/favorite")
@@ -33,15 +33,15 @@ func InitRouter(r *gin.Engine) {
 	comment.GET("/list/", handlers.VideoCommentList)
 
 	//relation
-	//relation := douying.Group("/relation")
-	//relation.POST("/action/", handlers.Relation)
-	//relation.GET("/follow/list/", handlers.FollowList)
-	//relation.GET("/follower/list/", handlers.FollowerList)
-	//relation.GET("/friend/list/", handlers.FriendList)
+	relation := douying.Group("/relation")
+	relation.POST("/action/", handlers.Relation)
+	relation.GET("/follow/list/", handlers.FollowList)
+	relation.GET("/follower/list/", handlers.FollowerList)
+	relation.GET("/friend/list/", handlers.FriendList)
 
 	//message
-	//msg := douying.Group("/message")
-	//msg.GET("/chat/", handlers.Chat)
-	//msg.POST("/action/", handlers.ChatMsg)
+	msg := douying.Group("/message")
+	msg.GET("/chat/", handlers.Receive)
+	msg.POST("/action/", handlers.Send)
 
 }

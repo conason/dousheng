@@ -70,6 +70,10 @@ func setupRouter() *gin.Engine {
 
 func main() {
 	r := gin.Default()
+	//err := r.SetTrustedProxies([]string{"172.*.*.*"})
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
 	InitRouter(r)
 
 	dao.Init()

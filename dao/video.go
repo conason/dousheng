@@ -85,6 +85,7 @@ func GetVideoById(videoId int64) (model.Video, error) {
 func GetVideosByUserId(userId int64) ([]model.Video, error) {
 	var video []model.Video
 	err := dal.Video.Where(dal.Video.UserID.Eq(userId)).Scan(&video)
+	//log.Panicln(err)
 	if err != nil {
 		return nil, err
 	}

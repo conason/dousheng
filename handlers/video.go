@@ -129,13 +129,16 @@ func VideoPublish(c *gin.Context) {
 	title := c.PostForm("title")
 	token := c.PostForm("token")
 	videoData, err := c.FormFile("data")
-	utils.ResolveError(err)
+	if err != nil {
+		utils.ResolveError(err)
+	}
 
 	if token == "" || title == "" || videoData == nil {
 		c.JSON(http.StatusOK, DouyinPublishActionResponse{
 			StatusCode: -1,
 			StatusMsg:  "invalid videoPublish request",
 		})
+		return
 	}
 
 	userId := utils.ParseToken(token)
@@ -146,6 +149,7 @@ func VideoPublish(c *gin.Context) {
 			StatusCode: -1,
 			StatusMsg:  "server is busy please try again",
 		})
+		return
 	}
 
 	key := fmt.Sprintf("%s.mp4", title)
@@ -156,6 +160,7 @@ func VideoPublish(c *gin.Context) {
 			StatusCode: -1,
 			StatusMsg:  "server is busy please try again",
 		})
+		return
 	}
 
 	playURL := utils.GetVideo(key)
@@ -165,6 +170,7 @@ func VideoPublish(c *gin.Context) {
 			StatusCode: -1,
 			StatusMsg:  "server is busy please try again",
 		})
+		return
 	}
 
 	c.JSON(http.StatusOK, DouyinPublishActionResponse{
@@ -192,5 +198,43 @@ func VideoPublish(c *gin.Context) {
 }
 
 func PublishList(ctx *gin.Context) {
+	userStr := ctx.Query("user_id")
+	userId, err := strconv.ParseInt(userStr, 10, 64)
+	if err != nil {
+		ctx.JSON(http.StatusOK, DouyinPublishListResponse{
+			StatusCode: -1,
+			StatusMsg:  "invalid request",
+			VideoList:  nil,
+		})
+	}
+	videos, err := dao.GetVideosByUserId(userId)
+	if err != nil {
+		ctx.JSON(http.StatusOK, DouyinPublishListResponse{
+			StatusCode: -1,
+			StatusMsg:  "server Error",
+			VideoList:  nil,
+		})
+	}
 
+	len := len(videos)
+	user, err := dao.GetUserData(userId)
+	videoList := make([]Video, len)
+	for i := 0; i < int(len); i++ {
+		videoList[i] = Video{
+			VideoID:       videos[i].VideoID,
+			User:          user,
+			PlayURL:       videos[i].PlayURL,
+			CoverURL:      videos[i].CoverURL,
+			FavoriteCount: videos[i].FavoriteCount,
+			CommentCount:  videos[i].CommentCount,
+			Title:         videos[i].Title,
+			CreateDate:    videos[i].CreateDate,
+			UpdateDate:    videos[i].UpdateDate,
+		}
+	}
+	ctx.JSON(http.StatusOK, DouyinPublishListResponse{
+		StatusCode: 0,
+		StatusMsg:  "get publish_list successfully",
+		VideoList:  videoList,
+	})
 }

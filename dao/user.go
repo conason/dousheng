@@ -15,40 +15,47 @@ func Register(username, password string) (int64, error) {
 		CreateTime: time.Now(),
 	}
 
-	findUser, err := FindUser(username)
+	err := dal.User.Create(&user)
 	if err != nil {
 		return -1, err
 	}
 
-	if findUser == 0 {
+	return 0, nil
 
-		err := dal.User.Create(&user)
-		if err != nil {
-			return -1, err
-		}
+	//findUser, err := FindUser(username)
+	//if err != nil {
+	//	return -1, err
+	//}
 
-		return 0, nil
-		//db.Db.Model(&user{}).Create(map[string]interface{}{"username": username, "password": password})
-		//fmt.Println("用户创建成功")
-		//return utils.SUCCESS
-	}
+	//if findUser == 0 {
 
-	return -1, errors.New("creat user fail")
+	//db.Db.Model(&user{}).Create(map[string]interface{}{"username": username, "password": password})
+	//fmt.Println("用户创建成功")
+	//return utils.SUCCESS
+	//}
+
+	//return -1, errors.New("creat user fail")
 	//fmt.Println("用户创建失败")
 	//return utils.FAIL
 }
 
 // FindUser 通过username查找用户并返回其id
 func FindUser(username string) (int64, error) {
-	user, err := dal.User.Where(dal.User.Name.Eq(username)).First()
+	var user int64
+	err := dal.User.
+		Select(dal.User.UserID).
+		Where(dal.User.Name.Eq(username)).Scan(&user)
+	if err != nil {
+		return 0, err
+	}
 	if err != nil {
 		return -1, err
 	}
-	if user == nil {
-		return 0, errors.New("no such user")
+	if user == 0 {
+		return 0, nil
 	}
 
-	return user.UserID, nil
+	return user, nil
 }
 
 // FindUserWithId 通过用户id判断用户是否存在
@@ -72,16 +79,17 @@ func FindUserWithId(userId int64) (bool, error) {
 
 // GetUserData 通过传入的id从数据库获取用户信息
 func GetUserData(userId int64) (model.User, error) {
-	user, err := dal.User.Where(dal.User.UserID.Eq(userId)).First()
+	var user model.User
+	err := dal.User.Where(dal.User.UserID.Eq(userId)).Scan(&user)
 	if err != nil {
 		return model.User{}, err
 	}
 
-	if user == nil {
+	if user == (model.User{}) {
 		return model.User{}, errors.New("no such user")
 	}
 
-	return *user, nil
+	return user, nil
 
 	//user := User{}
 	//db.Db.Where("id=?", id).First(&user)
@@ -89,32 +97,18 @@ func GetUserData(userId int64) (model.User, error) {
 }
 
 // Login 用户登录
-func Login(username, password string) (bool, error) {
-	//userData := user{}
-	//var res bool
-	//密码不能为空
-	if password == "" {
-		return false, errors.New("invalid password")
-	}
+func Login(username, password string) (int64, bool, error) {
 
-	findUser, err := FindUser(username)
+	user, err := dal.User.Where(dal.User.Name.Eq(username)).First()
 	if err != nil {
-		return false, err
-	}
-	if findUser == 0 {
-		return false, errors.New("no such user")
-	}
-
-	user, err := dal.User.Select(dal.User.Password).Where(dal.User.UserID.Eq(findUser)).First()
-	if err != nil {
-		return false, err
+		return 0, false, err
 	}
 
 	if user.Password != password {
-		return false, errors.New("Incorrect account password")
+		return -1, false, nil //errors.New("incorrect account password")
 	}
 
-	return true, nil
+	return user.UserID, true, nil
 	//else {
 
 	//db.Db.Where("username=?", username).First(&userData)
@@ -133,4 +127,13 @@ func GetUserById(userId int64) (model.User, error) {
 		return model.User{}, err
 	}
 	return *user, nil
+}
+
+func GetUserListByIds(ids []int64) ([]model.User, error) {
+	var user []model.User
+	err := dal.User.Where(dal.User.UserID.In(ids...)).Scan(&user)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
 }

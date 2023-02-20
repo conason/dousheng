@@ -28,6 +28,7 @@ func FavAction(ctx *gin.Context) {
 			StatusCode: -1,
 			StatusMsg:  "user not logged in",
 		})
+		return
 	}
 	userid, err := strconv.ParseInt(userId.(string), 10, 64)
 	if err != nil {
@@ -35,6 +36,7 @@ func FavAction(ctx *gin.Context) {
 			StatusCode: -1,
 			StatusMsg:  "invalid userId",
 		})
+		return
 	}
 
 	//videoId解析
@@ -45,6 +47,7 @@ func FavAction(ctx *gin.Context) {
 			StatusCode: -1,
 			StatusMsg:  "invalid video_id",
 		})
+		return
 	}
 
 	//actionType解析
@@ -55,6 +58,7 @@ func FavAction(ctx *gin.Context) {
 			StatusCode: -1,
 			StatusMsg:  "invalid action_type",
 		})
+		return
 	}
 
 	err = serviceImpl.FavAction(userid, videoid, int32(actionType))
@@ -63,6 +67,7 @@ func FavAction(ctx *gin.Context) {
 			StatusCode: -1,
 			StatusMsg:  err.Error(),
 		})
+		return
 	}
 
 	ctx.JSON(http.StatusOK, DouyinFavoriteActionResponse{

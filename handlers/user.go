@@ -1,11 +1,12 @@
 package handlers
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
 	"tk/dao"
-	"tk/dao/model"
+	model "tk/dao/model"
 	"tk/utils"
 )
 
@@ -34,30 +35,42 @@ func Register(c *gin.Context) {
 	username := c.Query("username")
 	password := c.Query("password")
 	md5Password := utils.Md5(password)
+
+	findUser, err := dao.FindUser(username)
+	if err != nil {
+		c.JSON(http.StatusOK, DouyinUserRegisterResponse{
+			StatusCode: -1,
+			StatusMsg:  "please register again",
+		})
+		return
+	}
+	if findUser != 0 {
+		c.JSON(http.StatusOK, DouyinUserRegisterResponse{
+			StatusCode: -1,
+			StatusMsg:  "user already exists",
+		})
+		return
+	}
+
 	code, err := dao.Register(username, md5Password)
 	if err != nil || code != 0 {
 		c.JSON(http.StatusOK, DouyinUserRegisterResponse{
 			StatusCode: -1,
 			StatusMsg:  "registration failed",
 		})
+		return
 	}
 
-	findUser, err := dao.FindUser(username)
-	if err != nil {
-		c.JSON(http.StatusOK, DouyinUserRegisterResponse{
-			StatusCode: -1,
-			StatusMsg:  "please login again",
-		})
-	}
+	fmt.Println("111")
+	userId, err := dao.FindUser(username)
 
 	//注册成功
 	c.JSON(http.StatusOK, DouyinUserRegisterResponse{
 		StatusCode: 0,
 		StatusMsg:  "registration success",
-		UserId:     findUser,
-		Token:      utils.BuildToken(findUser, username),
+		UserId:     userId,
+		Token:      utils.BuildToken(userId, username),
 	})
-
 	//code := model.Register(username, md5Password)
 	//if code == utils.SUCCESS {
 	//status := model.UserRegister{
@@ -93,6 +106,7 @@ func GetUserData(c *gin.Context) {
 			StatusCode: -1,
 			StatusMsg:  "invalid userId or token",
 		})
+		return
 	}
 
 	userid, err := strconv.ParseInt(userId, 10, 64)
@@ -101,6 +115,7 @@ func GetUserData(c *gin.Context) {
 			StatusCode: -1,
 			StatusMsg:  "invalid userId",
 		})
+		return
 	}
 
 	resId := utils.ParseToken(token)
@@ -109,6 +124,7 @@ func GetUserData(c *gin.Context) {
 			StatusCode: -1,
 			StatusMsg:  "invalid token",
 		})
+		return
 	}
 
 	user, err := dao.GetUserData(userid)
@@ -118,6 +134,7 @@ func GetUserData(c *gin.Context) {
 			StatusCode: -1,
 			StatusMsg:  "Failed to get user information",
 		})
+		return
 	}
 	//成功获取用户信息
 	c.JSON(http.StatusOK, DouyinUserResponse{
@@ -160,22 +177,16 @@ func Login(c *gin.Context) {
 			StatusCode: -1,
 			StatusMsg:  "invalid username or password",
 		})
+		return
 	}
 
-	login, err := dao.Login(username, md5Password)
-	if err != nil || login {
+	userId, login, err := dao.Login(username, md5Password)
+	if err != nil || !login {
 		c.JSON(http.StatusOK, DouyinUserLoginResponse{
 			StatusCode: -1,
 			StatusMsg:  "Login failed, please try again",
 		})
-	}
-
-	userId, err := dao.FindUser(username)
-	if err != nil {
-		c.JSON(http.StatusOK, DouyinUserLoginResponse{
-			StatusCode: -1,
-			StatusMsg:  "Login failed, please try again",
-		})
+		return
 	}
 
 	token := utils.BuildToken(userId, username)
