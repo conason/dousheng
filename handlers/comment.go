@@ -8,7 +8,6 @@ import (
 	"tk/dao"
 	"tk/dao/model"
 	"tk/service/serviceImpl"
-	"tk/utils"
 )
 
 type Comment struct {
@@ -31,28 +30,24 @@ type DouyinCommentListResponse struct {
 }
 
 func CommentAction(ctx *gin.Context) {
-	//userId, exists := ctx.Get("userId")
-	//if !exists {
-	//	ctx.JSON(http.StatusOK, DouyinCommentActionResponse{
-	//		StatusCode: -1,
-	//		StatusMsg:  "user not logged in",
-	//		Comment:    Comment{},
-	//	})
-	//	return
-	//}
-	//userid, err := strconv.ParseInt(userId.(string), 10, 64)
-	//if err != nil {
-	//	ctx.JSON(http.StatusOK, DouyinCommentActionResponse{
-	//		StatusCode: -1,
-	//		StatusMsg:  "invalid userId",
-	//		Comment:    Comment{},
-	//	})
-	//	return
-	//}
-
-	//token解析
-	token := ctx.Query("token")
-	userId := utils.ParseToken(token)
+	userId, exists := ctx.Get("userId")
+	if !exists {
+		ctx.JSON(http.StatusOK, DouyinCommentActionResponse{
+			StatusCode: -1,
+			StatusMsg:  "user not logged in",
+			Comment:    Comment{},
+		})
+		return
+	}
+	userid, err := strconv.ParseInt(userId.(string), 10, 64)
+	if err != nil {
+		ctx.JSON(http.StatusOK, DouyinCommentActionResponse{
+			StatusCode: -1,
+			StatusMsg:  "invalid userId",
+			Comment:    Comment{},
+		})
+		return
+	}
 
 	//videoId解析
 	videoId := ctx.Query("video_id")
@@ -78,7 +73,7 @@ func CommentAction(ctx *gin.Context) {
 	}
 
 	//actionType解析
-	act := ctx.Query("action_type")
+	act := ctx.Query("action_type ")
 	actionType, err := strconv.ParseInt(act, 10, 64)
 	if err != nil {
 		ctx.JSON(http.StatusOK, DouyinCommentActionResponse{
@@ -90,7 +85,7 @@ func CommentAction(ctx *gin.Context) {
 	}
 
 	comment := model.Comment{
-		UserID:     userId,
+		UserID:     userid,
 		VideoID:    videoid,
 		Content:    text,
 		IsDeleted:  int32(actionType),
@@ -107,7 +102,7 @@ func CommentAction(ctx *gin.Context) {
 		return
 	}
 
-	user, err := dao.GetUserById(userId)
+	user, err := dao.GetUserById(userid)
 	if err != nil {
 		ctx.JSON(http.StatusOK, DouyinCommentActionResponse{
 			StatusCode: -1,

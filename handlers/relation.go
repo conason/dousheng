@@ -6,14 +6,7 @@ import (
 	"strconv"
 	"tk/dao/model"
 	"tk/service/serviceImpl"
-	"tk/utils"
 )
-
-type FriendUser struct {
-	user    model.User `json:"user"`
-	message string     `json:"message"`
-	msgType int64      `json:"msgType"`
-}
 
 type DouyinRelationActionResponse struct {
 	StatusCode int32  `protobuf:"varint,1,opt,name=status_code,json=statusCode,proto3" json:"status_code,omitempty"`   // 状态码，0-成功，其他值-失败
@@ -42,6 +35,7 @@ func Relation(ctx *gin.Context) {
 	token := ctx.Query("token")
 	toUserIdStr := ctx.Query("to_user_id")
 	actionStr := ctx.Query("action_type")
+	userId, exists := ctx.Get("user_id")
 
 	if token == "" {
 		ctx.JSON(http.StatusOK, DouyinRelationActionResponse{
@@ -50,8 +44,14 @@ func Relation(ctx *gin.Context) {
 		})
 		return
 	}
-	//token解析
-	userId := utils.ParseToken(token)
+
+	if !exists {
+		ctx.JSON(http.StatusOK, DouyinRelationActionResponse{
+			StatusCode: -1,
+			StatusMsg:  "unknown user",
+		})
+		return
+	}
 
 	toUserId, err := strconv.ParseInt(toUserIdStr, 10, 64)
 	if err != nil {
@@ -71,7 +71,7 @@ func Relation(ctx *gin.Context) {
 		return
 	}
 
-	err = serviceImpl.SubAction(userId, toUserId, actionType)
+	err = serviceImpl.SubAction(userId.(int64), toUserId, actionType)
 	if err != nil {
 		ctx.JSON(http.StatusOK, DouyinRelationActionResponse{
 			StatusCode: -1,

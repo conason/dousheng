@@ -58,13 +58,13 @@ func PushVideoToMysql(userId int64, playUrl, coverUrl, title string) error {
 }
 
 // GetVideo 按照time降序的方式查找config.N个视频信息
-func GetVideo(data time.Time) ([]model.Video, int64) {
+func GetVideo(timeStr string) ([]model.Video, int64) {
 	var videos []model.Video
-	//timeNext, err := time.Parse("2006-01-02 15:04:05", timeStr)
-	//if err != nil {
-	//	return nil, 0
-	//}
-	err := dal.Video.Where(dal.Video.CreateDate.Gt(data)).
+	timeNext, err := time.Parse("2006-01-02 15:04:05", timeStr)
+	if err != nil {
+		return nil, 0
+	}
+	err = dal.Video.Where(dal.Video.CreateDate.Lt(timeNext)).
 		Order(dal.Video.CreateDate.Desc()).
 		Limit(config.N).
 		Scan(&videos)
@@ -75,7 +75,7 @@ func GetVideo(data time.Time) ([]model.Video, int64) {
 	//if count >= 5 {
 	//	count = 5
 	//}
-	count := len(videos)
+	count := cap(videos)
 	return videos, int64(count)
 }
 
@@ -95,17 +95,4 @@ func GetVideosByUserId(userId int64) ([]model.Video, error) {
 		return nil, err
 	}
 	return video, nil
-}
-
-func GetNewestVideos() ([]model.Video, int64, error) {
-	var videos []model.Video
-	err := dal.Video.Order(dal.Video.UpdateDate.Desc()).
-		Limit(config.N).
-		Scan(&videos)
-	if err != nil {
-		return nil, 0, err
-	}
-
-	return videos, int64(len(videos)), nil
-
 }

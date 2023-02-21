@@ -15,11 +15,15 @@ func Fav(favorite model.Favorite) error {
 
 func FavList(userId int64) ([]int64, error) {
 	var userIds []int64
-	err := dal.Favorite.Select(dal.Favorite.VideoID).
+	favorites, err := dal.Favorite.Select(dal.Favorite.VideoID).
 		Where(dal.Favorite.UserID.Eq(userId), dal.Favorite.IsDeleted.Eq(0)).
-		Scan(&userIds)
+		Find()
 	if err != nil {
 		return nil, err
+	}
+
+	for i, val := range favorites {
+		userIds[i] = val.UserID
 	}
 
 	return userIds, err

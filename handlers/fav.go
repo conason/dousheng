@@ -22,18 +22,15 @@ type DouyinFavoriteListResponse struct {
 
 func FavAction(ctx *gin.Context) {
 	//userId解析
-	//userIdStr := ctx.Query("user_id")
-	//userid, err := strconv.ParseInt(userIdStr, 10, 64)
-	//if err != nil {
-	//	ctx.JSON(http.StatusOK, DouyinFavoriteActionResponse{
-	//		StatusCode: -1,
-	//		StatusMsg:  "invalid userId",
-	//	})
-	//	return
-	//}
-
-	token := ctx.Query("token")
-	userId := utils.ParseToken(token)
+	userIdStr := ctx.Query("user_id")
+	userid, err := strconv.ParseInt(userIdStr, 10, 64)
+	if err != nil {
+		ctx.JSON(http.StatusOK, DouyinFavoriteActionResponse{
+			StatusCode: -1,
+			StatusMsg:  "invalid userId",
+		})
+		return
+	}
 
 	//videoId解析
 	videoId := ctx.Query("video_id")
@@ -57,7 +54,7 @@ func FavAction(ctx *gin.Context) {
 		return
 	}
 
-	err = serviceImpl.FavAction(userId, videoid, int32(actionType))
+	err = serviceImpl.FavAction(userid, videoid, int32(actionType))
 	if err != nil {
 		ctx.JSON(http.StatusOK, DouyinFavoriteActionResponse{
 			StatusCode: -1,
