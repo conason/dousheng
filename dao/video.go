@@ -15,7 +15,12 @@ import (
 func ParseVideo(videoData *multipart.FileHeader) ([]byte, error) {
 	file, err := videoData.Open()
 	utils.ResolveError(err)
-	defer file.Close()
+	defer func(file multipart.File) {
+		err := file.Close()
+		if err != nil {
+			utils.ResolveError(err)
+		}
+	}(file)
 	data, err := ioutil.ReadAll(file)
 	if err != nil && err == io.EOF {
 		return nil, err
@@ -75,7 +80,7 @@ func GetVideo(timeStr string) ([]model.Video, int64) {
 }
 
 func GetVideoById(videoId int64) (model.Video, error) {
-	video, err := dal.Video.Where(dal.Video.VideoID.Eq(videoId)).First()
+	video, err := dal.Video.Where(dal.Video.ID.Eq(videoId)).First()
 	if err != nil {
 		return model.Video{}, err
 	}

@@ -169,7 +169,7 @@ func UserCommentList(ctx *gin.Context) {
 	var comments = make([]Comment, len)
 	for i := 0; i < len; i++ {
 		comments[i] = Comment{
-			Id:         userCommentList[i].CommentID,
+			Id:         userCommentList[i].ID,
 			User:       user,
 			Content:    userCommentList[i].Content,
 			CreateDate: string(userCommentList[i].CreateTime.Unix()),
@@ -217,7 +217,7 @@ func VideoCommentList(ctx *gin.Context) {
 			return
 		}
 		comments[i] = Comment{
-			Id:         commentList[i].CommentID,
+			Id:         commentList[i].ID,
 			User:       user,
 			Content:    commentList[i].Content,
 			CreateDate: string(commentList[i].CreateTime.Unix()),

@@ -6,7 +6,6 @@ package dal
 
 import (
 	"context"
-	"tk/dao/model"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -16,6 +15,8 @@ import (
 	"gorm.io/gen/field"
 
 	"gorm.io/plugin/dbresolver"
+
+	"tk/dao/model"
 )
 
 func newRelation(db *gorm.DB, opts ...gen.DOOption) relation {
@@ -26,7 +27,7 @@ func newRelation(db *gorm.DB, opts ...gen.DOOption) relation {
 
 	tableName := _relation.relationDo.TableName()
 	_relation.ALL = field.NewAsterisk(tableName)
-	_relation.RelationID = field.NewInt64(tableName, "relation_id")
+	_relation.ID = field.NewInt64(tableName, "id")
 	_relation.FollowerID = field.NewInt64(tableName, "follower_id")
 	_relation.FollowingID = field.NewInt64(tableName, "following_id")
 	_relation.Isdeleted = field.NewInt32(tableName, "isdeleted")
@@ -41,7 +42,7 @@ type relation struct {
 	relationDo
 
 	ALL         field.Asterisk
-	RelationID  field.Int64 // 关注id
+	ID          field.Int64 // 关注id
 	FollowerID  field.Int64 // 粉丝id
 	FollowingID field.Int64 // 博主id
 	Isdeleted   field.Int32 // 取消关注
@@ -62,7 +63,7 @@ func (r relation) As(alias string) *relation {
 
 func (r *relation) updateTableName(table string) *relation {
 	r.ALL = field.NewAsterisk(table)
-	r.RelationID = field.NewInt64(table, "relation_id")
+	r.ID = field.NewInt64(table, "id")
 	r.FollowerID = field.NewInt64(table, "follower_id")
 	r.FollowingID = field.NewInt64(table, "following_id")
 	r.Isdeleted = field.NewInt32(table, "isdeleted")
@@ -84,7 +85,7 @@ func (r *relation) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 
 func (r *relation) fillFieldMap() {
 	r.fieldMap = make(map[string]field.Expr, 5)
-	r.fieldMap["relation_id"] = r.RelationID
+	r.fieldMap["id"] = r.ID
 	r.fieldMap["follower_id"] = r.FollowerID
 	r.fieldMap["following_id"] = r.FollowingID
 	r.fieldMap["isdeleted"] = r.Isdeleted

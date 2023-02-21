@@ -6,7 +6,6 @@ package dal
 
 import (
 	"context"
-	"tk/dao/model"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -16,6 +15,8 @@ import (
 	"gorm.io/gen/field"
 
 	"gorm.io/plugin/dbresolver"
+
+	"tk/dao/model"
 )
 
 func newFavorite(db *gorm.DB, opts ...gen.DOOption) favorite {
@@ -26,7 +27,7 @@ func newFavorite(db *gorm.DB, opts ...gen.DOOption) favorite {
 
 	tableName := _favorite.favoriteDo.TableName()
 	_favorite.ALL = field.NewAsterisk(tableName)
-	_favorite.FavoriteID = field.NewInt64(tableName, "favorite_id")
+	_favorite.ID = field.NewInt64(tableName, "id")
 	_favorite.Username = field.NewString(tableName, "username")
 	_favorite.UserID = field.NewInt64(tableName, "user_id")
 	_favorite.VideoID = field.NewInt64(tableName, "video_id")
@@ -42,7 +43,7 @@ type favorite struct {
 	favoriteDo
 
 	ALL        field.Asterisk
-	FavoriteID field.Int64  // 点赞id
+	ID         field.Int64  // 点赞id
 	Username   field.String // 用户名
 	UserID     field.Int64  // 用户id
 	VideoID    field.Int64  // 视频id
@@ -64,7 +65,7 @@ func (f favorite) As(alias string) *favorite {
 
 func (f *favorite) updateTableName(table string) *favorite {
 	f.ALL = field.NewAsterisk(table)
-	f.FavoriteID = field.NewInt64(table, "favorite_id")
+	f.ID = field.NewInt64(table, "id")
 	f.Username = field.NewString(table, "username")
 	f.UserID = field.NewInt64(table, "user_id")
 	f.VideoID = field.NewInt64(table, "video_id")
@@ -87,7 +88,7 @@ func (f *favorite) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 
 func (f *favorite) fillFieldMap() {
 	f.fieldMap = make(map[string]field.Expr, 6)
-	f.fieldMap["favorite_id"] = f.FavoriteID
+	f.fieldMap["id"] = f.ID
 	f.fieldMap["username"] = f.Username
 	f.fieldMap["user_id"] = f.UserID
 	f.fieldMap["video_id"] = f.VideoID

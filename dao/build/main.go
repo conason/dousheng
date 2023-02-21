@@ -23,7 +23,7 @@ func main() {
 	// 生成实例
 	g := gen.NewGenerator(gen.Config{
 		OutPath:      "./dao/dal",
-		ModelPkgPath: "./dao/model",
+		ModelPkgPath: "./model",
 		Mode:         gen.WithDefaultQuery | gen.WithoutContext,
 	})
 	// 设置目标 db

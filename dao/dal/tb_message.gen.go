@@ -6,7 +6,6 @@ package dal
 
 import (
 	"context"
-	"tk/dao/model"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -16,6 +15,8 @@ import (
 	"gorm.io/gen/field"
 
 	"gorm.io/plugin/dbresolver"
+
+	"tk/dao/model"
 )
 
 func newMessage(db *gorm.DB, opts ...gen.DOOption) message {
@@ -26,7 +27,7 @@ func newMessage(db *gorm.DB, opts ...gen.DOOption) message {
 
 	tableName := _message.messageDo.TableName()
 	_message.ALL = field.NewAsterisk(tableName)
-	_message.MessageID = field.NewInt64(tableName, "message_id")
+	_message.ID = field.NewInt64(tableName, "id")
 	_message.ToUserID = field.NewInt64(tableName, "to_user_id")
 	_message.FromUserID = field.NewInt64(tableName, "from_user_id")
 	_message.Content = field.NewString(tableName, "content")
@@ -41,7 +42,7 @@ type message struct {
 	messageDo
 
 	ALL        field.Asterisk
-	MessageID  field.Int64  // 消息id
+	ID         field.Int64  // 消息id
 	ToUserID   field.Int64  // 接收方id
 	FromUserID field.Int64  // 发送方id
 	Content    field.String // 消息内容
@@ -62,7 +63,7 @@ func (m message) As(alias string) *message {
 
 func (m *message) updateTableName(table string) *message {
 	m.ALL = field.NewAsterisk(table)
-	m.MessageID = field.NewInt64(table, "message_id")
+	m.ID = field.NewInt64(table, "id")
 	m.ToUserID = field.NewInt64(table, "to_user_id")
 	m.FromUserID = field.NewInt64(table, "from_user_id")
 	m.Content = field.NewString(table, "content")
@@ -84,7 +85,7 @@ func (m *message) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 
 func (m *message) fillFieldMap() {
 	m.fieldMap = make(map[string]field.Expr, 5)
-	m.fieldMap["message_id"] = m.MessageID
+	m.fieldMap["id"] = m.ID
 	m.fieldMap["to_user_id"] = m.ToUserID
 	m.fieldMap["from_user_id"] = m.FromUserID
 	m.fieldMap["content"] = m.Content

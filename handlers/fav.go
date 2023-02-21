@@ -22,15 +22,8 @@ type DouyinFavoriteListResponse struct {
 
 func FavAction(ctx *gin.Context) {
 	//userId解析
-	userId, exists := ctx.Get("userId")
-	if !exists {
-		ctx.JSON(http.StatusOK, DouyinFavoriteActionResponse{
-			StatusCode: -1,
-			StatusMsg:  "user not logged in",
-		})
-		return
-	}
-	userid, err := strconv.ParseInt(userId.(string), 10, 64)
+	userIdStr := ctx.Query("user_id")
+	userid, err := strconv.ParseInt(userIdStr, 10, 64)
 	if err != nil {
 		ctx.JSON(http.StatusOK, DouyinFavoriteActionResponse{
 			StatusCode: -1,
@@ -111,7 +104,7 @@ func FavList(ctx *gin.Context) {
 			utils.ResolveError(err)
 		}
 		videos[i] = Video{
-			VideoID:       video.VideoID,
+			ID:            video.ID,
 			User:          user,
 			PlayURL:       video.PlayURL,
 			CoverURL:      video.CoverURL,

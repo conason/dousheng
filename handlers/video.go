@@ -12,8 +12,8 @@ import (
 )
 
 type Video struct {
-	VideoID       int64      `gorm:"column:video_id;primaryKey;autoIncrement:true" json:"video_id"`            // 视频id
-	User          model.User `gorm:"column:user_id" json:"user_id"`                                            // 视频作者
+	ID            int64      `gorm:"column:video_id;primaryKey;autoIncrement:true" json:"id"`                  // 视频id
+	User          model.User `gorm:"column:user_id" json:"author"`                                             // 视频作者
 	PlayURL       string     `gorm:"column:play_url" json:"play_url"`                                          // 视频URL
 	CoverURL      string     `gorm:"column:cover_url" json:"cover_url"`                                        // 封面URL
 	FavoriteCount int32      `gorm:"column:favorite_count" json:"favorite_count"`                              // 点赞总数
@@ -79,7 +79,7 @@ func Feed(c *gin.Context) {
 			utils.ResolveError(err)
 		}
 		video[i] = Video{
-			VideoID:       videoData[i].VideoID,
+			ID:            videoData[i].ID,
 			User:          user,
 			PlayURL:       videoData[i].PlayURL,
 			CoverURL:      videoData[i].CoverURL,
@@ -153,7 +153,7 @@ func VideoPublish(c *gin.Context) {
 	}
 
 	key := fmt.Sprintf("%s.mp4", title)
-
+	fmt.Printf("%s\n", title)
 	code := utils.PushVideo(key, parseVideo)
 	if code != 0 {
 		c.JSON(http.StatusOK, DouyinPublishActionResponse{
@@ -221,7 +221,7 @@ func PublishList(ctx *gin.Context) {
 	videoList := make([]Video, len)
 	for i := 0; i < int(len); i++ {
 		videoList[i] = Video{
-			VideoID:       videos[i].VideoID,
+			ID:            videos[i].ID,
 			User:          user,
 			PlayURL:       videos[i].PlayURL,
 			CoverURL:      videos[i].CoverURL,

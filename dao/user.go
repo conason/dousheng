@@ -43,7 +43,7 @@ func Register(username, password string) (int64, error) {
 func FindUser(username string) (int64, error) {
 	var user int64
 	err := dal.User.
-		Select(dal.User.UserID).
+		Select(dal.User.ID).
 		Where(dal.User.Name.Eq(username)).Scan(&user)
 	if err != nil {
 		return 0, err
@@ -61,8 +61,8 @@ func FindUser(username string) (int64, error) {
 // FindUserWithId 通过用户id判断用户是否存在
 func FindUserWithId(userId int64) (bool, error) {
 	count, err := dal.User.
-		Select(dal.User.UserID).
-		Where(dal.User.UserID.Eq(userId)).
+		Select(dal.User.ID).
+		Where(dal.User.ID.Eq(userId)).
 		Count()
 	if err != nil {
 		return false, err
@@ -80,7 +80,7 @@ func FindUserWithId(userId int64) (bool, error) {
 // GetUserData 通过传入的id从数据库获取用户信息
 func GetUserData(userId int64) (model.User, error) {
 	var user model.User
-	err := dal.User.Where(dal.User.UserID.Eq(userId)).Scan(&user)
+	err := dal.User.Where(dal.User.ID.Eq(userId)).Scan(&user)
 	if err != nil {
 		return model.User{}, err
 	}
@@ -108,7 +108,7 @@ func Login(username, password string) (int64, bool, error) {
 		return -1, false, nil //errors.New("incorrect account password")
 	}
 
-	return user.UserID, true, nil
+	return user.ID, true, nil
 	//else {
 
 	//db.Db.Where("username=?", username).First(&userData)
@@ -122,16 +122,17 @@ func Login(username, password string) (int64, bool, error) {
 }
 
 func GetUserById(userId int64) (model.User, error) {
-	user, err := dal.User.Where(dal.User.UserID.Eq(userId)).First()
+	var user model.User
+	err := dal.User.Where(dal.User.ID.Eq(userId)).Scan(&user)
 	if err != nil {
 		return model.User{}, err
 	}
-	return *user, nil
+	return user, nil
 }
 
 func GetUserListByIds(ids []int64) ([]model.User, error) {
 	var user []model.User
-	err := dal.User.Where(dal.User.UserID.In(ids...)).Scan(&user)
+	err := dal.User.Where(dal.User.ID.In(ids...)).Scan(&user)
 	if err != nil {
 		return nil, err
 	}

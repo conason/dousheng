@@ -12,7 +12,7 @@ const TableNameFavorite = "tb_favorite"
 
 // Favorite mapped from table <tb_favorite>
 type Favorite struct {
-	FavoriteID int64     `gorm:"column:favorite_id;primaryKey;autoIncrement:true" json:"favorite_id"`      // 点赞id
+	ID         int64     `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`                        // 点赞id
 	Username   string    `gorm:"column:username" json:"username"`                                          // 用户名
 	UserID     int64     `gorm:"column:user_id" json:"user_id"`                                            // 用户id
 	VideoID    int64     `gorm:"column:video_id" json:"video_id"`                                          // 视频id

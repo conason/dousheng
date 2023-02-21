@@ -6,7 +6,6 @@ package dal
 
 import (
 	"context"
-	"tk/dao/model"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -16,6 +15,8 @@ import (
 	"gorm.io/gen/field"
 
 	"gorm.io/plugin/dbresolver"
+
+	"tk/dao/model"
 )
 
 func newUser(db *gorm.DB, opts ...gen.DOOption) user {
@@ -26,7 +27,7 @@ func newUser(db *gorm.DB, opts ...gen.DOOption) user {
 
 	tableName := _user.userDo.TableName()
 	_user.ALL = field.NewAsterisk(tableName)
-	_user.UserID = field.NewInt64(tableName, "user_id")
+	_user.ID = field.NewInt64(tableName, "id")
 	_user.Name = field.NewString(tableName, "name")
 	_user.FollowCount = field.NewInt32(tableName, "follow_count")
 	_user.FollowerCount = field.NewInt32(tableName, "follower_count")
@@ -47,7 +48,7 @@ type user struct {
 	userDo
 
 	ALL             field.Asterisk
-	UserID          field.Int64  // 用户id
+	ID              field.Int64  // 用户id
 	Name            field.String // 用户名
 	FollowCount     field.Int32  // 关注总数
 	FollowerCount   field.Int32  // 粉丝总数
@@ -74,7 +75,7 @@ func (u user) As(alias string) *user {
 
 func (u *user) updateTableName(table string) *user {
 	u.ALL = field.NewAsterisk(table)
-	u.UserID = field.NewInt64(table, "user_id")
+	u.ID = field.NewInt64(table, "id")
 	u.Name = field.NewString(table, "name")
 	u.FollowCount = field.NewInt32(table, "follow_count")
 	u.FollowerCount = field.NewInt32(table, "follower_count")
@@ -102,7 +103,7 @@ func (u *user) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 
 func (u *user) fillFieldMap() {
 	u.fieldMap = make(map[string]field.Expr, 11)
-	u.fieldMap["user_id"] = u.UserID
+	u.fieldMap["id"] = u.ID
 	u.fieldMap["name"] = u.Name
 	u.fieldMap["follow_count"] = u.FollowCount
 	u.fieldMap["follower_count"] = u.FollowerCount

@@ -12,7 +12,7 @@ const TableNameVideo = "tb_video"
 
 // Video mapped from table <tb_video>
 type Video struct {
-	VideoID       int64     `gorm:"column:video_id;primaryKey;autoIncrement:true" json:"video_id"`            // 视频id
+	ID            int64     `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`                        // 视频id
 	UserID        int64     `gorm:"column:user_id" json:"user_id"`                                            // 用户作者id
 	PlayURL       string    `gorm:"column:play_url" json:"play_url"`                                          // 视频URL
 	CoverURL      string    `gorm:"column:cover_url" json:"cover_url"`                                        // 封面URL

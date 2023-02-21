@@ -6,7 +6,6 @@ package dal
 
 import (
 	"context"
-	"tk/dao/model"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -16,6 +15,8 @@ import (
 	"gorm.io/gen/field"
 
 	"gorm.io/plugin/dbresolver"
+
+	"tk/dao/model"
 )
 
 func newVideo(db *gorm.DB, opts ...gen.DOOption) video {
@@ -26,7 +27,7 @@ func newVideo(db *gorm.DB, opts ...gen.DOOption) video {
 
 	tableName := _video.videoDo.TableName()
 	_video.ALL = field.NewAsterisk(tableName)
-	_video.VideoID = field.NewInt64(tableName, "video_id")
+	_video.ID = field.NewInt64(tableName, "id")
 	_video.UserID = field.NewInt64(tableName, "user_id")
 	_video.PlayURL = field.NewString(tableName, "play_url")
 	_video.CoverURL = field.NewString(tableName, "cover_url")
@@ -45,7 +46,7 @@ type video struct {
 	videoDo
 
 	ALL           field.Asterisk
-	VideoID       field.Int64  // 视频id
+	ID            field.Int64  // 视频id
 	UserID        field.Int64  // 用户作者id
 	PlayURL       field.String // 视频URL
 	CoverURL      field.String // 封面URL
@@ -70,7 +71,7 @@ func (v video) As(alias string) *video {
 
 func (v *video) updateTableName(table string) *video {
 	v.ALL = field.NewAsterisk(table)
-	v.VideoID = field.NewInt64(table, "video_id")
+	v.ID = field.NewInt64(table, "id")
 	v.UserID = field.NewInt64(table, "user_id")
 	v.PlayURL = field.NewString(table, "play_url")
 	v.CoverURL = field.NewString(table, "cover_url")
@@ -96,7 +97,7 @@ func (v *video) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 
 func (v *video) fillFieldMap() {
 	v.fieldMap = make(map[string]field.Expr, 9)
-	v.fieldMap["video_id"] = v.VideoID
+	v.fieldMap["id"] = v.ID
 	v.fieldMap["user_id"] = v.UserID
 	v.fieldMap["play_url"] = v.PlayURL
 	v.fieldMap["cover_url"] = v.CoverURL

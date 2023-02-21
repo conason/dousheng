@@ -6,7 +6,6 @@ package dal
 
 import (
 	"context"
-	"tk/dao/model"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -16,6 +15,8 @@ import (
 	"gorm.io/gen/field"
 
 	"gorm.io/plugin/dbresolver"
+
+	"tk/dao/model"
 )
 
 func newComment(db *gorm.DB, opts ...gen.DOOption) comment {
@@ -26,7 +27,7 @@ func newComment(db *gorm.DB, opts ...gen.DOOption) comment {
 
 	tableName := _comment.commentDo.TableName()
 	_comment.ALL = field.NewAsterisk(tableName)
-	_comment.CommentID = field.NewInt64(tableName, "comment_id")
+	_comment.ID = field.NewInt64(tableName, "id")
 	_comment.UserID = field.NewInt64(tableName, "user_id")
 	_comment.VideoID = field.NewInt64(tableName, "video_id")
 	_comment.Content = field.NewString(tableName, "content")
@@ -42,7 +43,7 @@ type comment struct {
 	commentDo
 
 	ALL        field.Asterisk
-	CommentID  field.Int64  // 评论id
+	ID         field.Int64  // 评论id
 	UserID     field.Int64  // 用户id
 	VideoID    field.Int64  // 视频id
 	Content    field.String // 评论
@@ -64,7 +65,7 @@ func (c comment) As(alias string) *comment {
 
 func (c *comment) updateTableName(table string) *comment {
 	c.ALL = field.NewAsterisk(table)
-	c.CommentID = field.NewInt64(table, "comment_id")
+	c.ID = field.NewInt64(table, "id")
 	c.UserID = field.NewInt64(table, "user_id")
 	c.VideoID = field.NewInt64(table, "video_id")
 	c.Content = field.NewString(table, "content")
@@ -87,7 +88,7 @@ func (c *comment) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 
 func (c *comment) fillFieldMap() {
 	c.fieldMap = make(map[string]field.Expr, 6)
-	c.fieldMap["comment_id"] = c.CommentID
+	c.fieldMap["id"] = c.ID
 	c.fieldMap["user_id"] = c.UserID
 	c.fieldMap["video_id"] = c.VideoID
 	c.fieldMap["content"] = c.Content

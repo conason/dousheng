@@ -12,7 +12,7 @@ const TableNameUser = "tb_user"
 
 // User mapped from table <tb_user>
 type User struct {
-	UserID          int64     `gorm:"column:user_id;primaryKey;autoIncrement:true" json:"user_id"`              // 用户id
+	ID              int64     `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`                        // 用户id
 	Name            string    `gorm:"column:name" json:"name"`                                                  // 用户名
 	FollowCount     int32     `gorm:"column:follow_count" json:"follow_count"`                                  // 关注总数
 	FollowerCount   int32     `gorm:"column:follower_count" json:"follower_count"`                              // 粉丝总数
