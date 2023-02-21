@@ -1,13 +1,13 @@
 package handlers
 
 import (
+	"dousheng/dao"
+	model "dousheng/dao/model"
+	"dousheng/utils"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
-	"tk/dao"
-	model "tk/dao/model"
-	"tk/utils"
 )
 
 type DouyinUserRegisterResponse struct {

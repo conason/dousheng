@@ -1,8 +1,8 @@
 package dao
 
 import (
-	"tk/dao/dal"
-	"tk/dao/model"
+	"dousheng/dao/dal"
+	"dousheng/dao/model"
 )
 
 func RelationSave(relation model.Relation) error {

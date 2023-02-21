@@ -1,11 +1,11 @@
 package handlers
 
 import (
+	"dousheng/dao/model"
+	"dousheng/service/serviceImpl"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
-	"tk/dao/model"
-	"tk/service/serviceImpl"
 )
 
 type DouyinRelationActionResponse struct {

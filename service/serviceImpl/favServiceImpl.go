@@ -1,9 +1,9 @@
 package serviceImpl
 
 import (
+	"dousheng/dao"
+	"dousheng/dao/model"
 	"time"
-	"tk/dao"
-	"tk/dao/model"
 )
 
 func FavAction(userId int64, videoId int64, actionType int32) error {

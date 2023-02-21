@@ -1,14 +1,14 @@
 package handlers
 
 import (
+	"dousheng/dao"
+	"dousheng/dao/model"
+	"dousheng/utils"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
 	"time"
-	"tk/dao"
-	"tk/dao/model"
-	"tk/utils"
 )
 
 type Video struct {
@@ -47,15 +47,19 @@ func Feed(c *gin.Context) {
 	if err != nil {
 		utils.ResolveError(err)
 	}
-	timeNext := time.Unix(timeInt, 0).Format("2006-01-02 15:04:05")
+	//timeNext := time.Unix(timeInt, 0).Format("2006-01-02 15:04:05")
+	timeNext, err := utils.TimestampToDate(timeInt)
 	utils.ResolveError(err)
 
-	loc, err := time.LoadLocation("Asia/Shanghai")
-	if err != nil {
-		utils.ResolveError(err)
-	}
-	timeNow := time.Now().Format("2006-01-02 15:04:05")
-	nowTime, err := time.ParseInLocation("2006-01-02 15:04:05", timeNow, loc)
+	//loc, err := time.LoadLocation("Asia/Shanghai")
+	//if err != nil {
+	//	utils.ResolveError(err)
+	//}
+	//timeNow := time.Now().Format("2006-01-02 15:04:05")
+	//nowTime, err := time.ParseInLocation("2006-01-02 15:04:05", timeNow, loc)
+	//utils.ResolveError(err)
+
+	timestamp, err := utils.GetTimestamp()
 	utils.ResolveError(err)
 
 	videoData, count := dao.GetVideo(timeNext)
@@ -63,14 +67,42 @@ func Feed(c *gin.Context) {
 		return
 	}
 	if count == 0 {
+		videoData, count, err = dao.GetNewestVideos()
+		if err != nil {
+			c.JSON(http.StatusOK, DouyinFeedResponse{
+				StatusCode: -1,
+				StatusMsg:  "server is busy please try again",
+				VideoList:  nil,
+				NextTime:   timestamp,
+			})
+		}
+
+		videos, err := getVideos(videoData, count)
+		utils.ResolveError(err)
+
 		c.JSON(http.StatusOK, DouyinFeedResponse{
 			StatusCode: -1,
-			StatusMsg:  "Reach bottom of video list",
-			VideoList:  nil,
-			NextTime:   nowTime.Unix(),
+			StatusMsg:  "feed video",
+			VideoList:  videos,
+			NextTime:   videos[0].UpdateDate.Unix(),
 		})
+		return
 	}
 
+	videos, err := getVideos(videoData, count)
+	utils.ResolveError(err)
+
+	//feed响应
+	c.JSON(http.StatusOK, DouyinFeedResponse{
+		StatusCode: 0,
+		StatusMsg:  "feed video",
+		VideoList:  videos,
+		NextTime:   videos[0].UpdateDate.Unix(),
+	})
+
+}
+
+func getVideos(videoData []model.Video, count int64) ([]Video, error) {
 	video := make([]Video, count)
 	for i := 0; i < int(count); i++ {
 		userId := videoData[i].UserID
@@ -86,42 +118,10 @@ func Feed(c *gin.Context) {
 			FavoriteCount: videoData[i].FavoriteCount,
 			CommentCount:  videoData[i].CommentCount,
 			Title:         videoData[i].Title,
-			CreateDate:    videoData[i].CreateDate,
-			UpdateDate:    videoData[i].UpdateDate,
 		}
 	}
 
-	//feed响应
-	c.JSON(http.StatusOK, DouyinFeedResponse{
-		StatusCode: 0,
-		StatusMsg:  "feed video",
-		VideoList:  video,
-		NextTime:   nowTime.Unix(),
-	})
-
-	//videoAndAuthor := make([]model.Video, count)
-	//for i := 0; i < int(count); i++ {
-	//	user := model.GetUserData(videoData[i].Id)
-	//	videoAndAuthor[i].Id = videoData[i].VideoId
-	//	videoAndAuthor[i].PlayUrl = videoData[i].PlayUrl
-	//	videoAndAuthor[i].CoverUrl = videoData[i].CoverUrl
-	//	videoAndAuthor[i].CommentCount = videoData[i].CommentCount
-	//	videoAndAuthor[i].FavoriteCount = videoData[i].FavoriteCount
-	//	videoAndAuthor[i].IsFavorite = videoData[i].IsFavorite
-	//	videoAndAuthor[i].Title = videoData[i].Title
-	//	videoAndAuthor[i].Author = user
-	//}
-	//timeNow, err := strconv.ParseInt(time.Now().Format("2006-01-02 15:04"), 10, 64)
-	//utils.ResolveError(err)
-	//videoLists := model.VideoLists{
-	//	Response: model.Response{
-	//		StatusCode: utils.SUCCESS,
-	//		StatusMsg:  utils.GetStatusMsg(utils.VIDEO_GET_SUCCESS),
-	//	},
-	//	NextTime:  int32(timeNow),
-	//	VideoList: videoAndAuthor,
-	//}
-	//c.JSON(http.StatusOK, videoLists)
+	return video, nil
 }
 
 // VideoPublish 视频发布
@@ -140,9 +140,9 @@ func VideoPublish(c *gin.Context) {
 		})
 		return
 	}
-
+	//token解析
 	userId := utils.ParseToken(token)
-
+	//将*multipart.FileHeader类型转化为[]byte
 	parseVideo, err := dao.ParseVideo(videoData)
 	if err != nil {
 		c.JSON(http.StatusOK, DouyinPublishActionResponse{
@@ -151,10 +151,13 @@ func VideoPublish(c *gin.Context) {
 		})
 		return
 	}
-
-	key := fmt.Sprintf("%s.mp4", title)
-	fmt.Printf("%s\n", title)
-	code := utils.PushVideo(key, parseVideo)
+	//视频文件名
+	videoName := fmt.Sprintf("%s.mp4", title)
+	//封面文件名
+	//coverName := strings.Replace(videoName, ".mp4", ".jpeg", 1)
+	//fmt.Printf("%s\n", title)
+	//视频上传
+	code := utils.PushVideo(videoName, parseVideo)
 	if code != 0 {
 		c.JSON(http.StatusOK, DouyinPublishActionResponse{
 			StatusCode: -1,
@@ -162,8 +165,9 @@ func VideoPublish(c *gin.Context) {
 		})
 		return
 	}
-
-	playURL := utils.GetVideo(key)
+	//获取playURL
+	playURL := utils.GetVideo(videoName)
+	//上传至数据库
 	err = dao.PushVideoToMysql(userId, playURL, "", title)
 	if err != nil {
 		c.JSON(http.StatusOK, DouyinPublishActionResponse{
@@ -177,23 +181,6 @@ func VideoPublish(c *gin.Context) {
 		StatusCode: 0,
 		StatusMsg:  "publish_action successfully",
 	})
-
-	//userId := utils.ParseToken(token)
-	//data := model.ParseVideo(videoData)
-	//key := fmt.Sprintf("%s.mp4", title)
-	//code := utils.PushVideo(key, data)
-	//if code == utils.SUCCESS {
-	//	model.PushVideoToMysql(userId, utils.GetVideo(fmt.Sprintf("%s.mp4", title)), "", title)
-	//	c.JSON(http.StatusOK, model.Response{
-	//		StatusCode: utils.SUCCESS,
-	//		StatusMsg:  utils.GetStatusMsg(utils.VIDEO_PUSH_SUCCESS),
-	//	})
-	//} else {
-	//	c.JSON(http.StatusOK, model.Response{
-	//		StatusCode: utils.FAIL,
-	//		StatusMsg:  utils.GetStatusMsg(utils.VIDEO_PUSH_FAIL),
-	//	})
-	//}
 
 }
 
@@ -228,8 +215,6 @@ func PublishList(ctx *gin.Context) {
 			FavoriteCount: videos[i].FavoriteCount,
 			CommentCount:  videos[i].CommentCount,
 			Title:         videos[i].Title,
-			CreateDate:    videos[i].CreateDate,
-			UpdateDate:    videos[i].UpdateDate,
 		}
 	}
 	ctx.JSON(http.StatusOK, DouyinPublishListResponse{

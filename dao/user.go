@@ -1,10 +1,10 @@
 package dao
 
 import (
+	"dousheng/dao/dal"
+	"dousheng/dao/model"
 	"errors"
 	"time"
-	"tk/dao/dal"
-	"tk/dao/model"
 )
 
 // Register 用户注册

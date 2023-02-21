@@ -1,9 +1,9 @@
 package serviceImpl
 
 import (
+	"dousheng/dao"
+	"dousheng/dao/model"
 	"time"
-	"tk/dao"
-	"tk/dao/model"
 )
 
 func SubAction(userId, upId, actionType int64) error {

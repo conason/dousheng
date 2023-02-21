@@ -1,6 +1,6 @@
 package service
 
-import "tk/dao/model"
+import "dousheng/dao/model"
 
 type FavService interface {
 	FavAction(favorite model.Favorite) error

@@ -1,14 +1,14 @@
 package middleware
 
 import (
+	"dousheng/config"
+	"dousheng/dao/model"
+	"dousheng/utils"
 	"errors"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strings"
-	"tk/config"
-	"tk/dao/model"
-	"tk/utils"
 )
 
 type JWT struct {

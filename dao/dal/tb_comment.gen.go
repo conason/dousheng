@@ -16,7 +16,7 @@ import (
 
 	"gorm.io/plugin/dbresolver"
 
-	"tk/dao/model"
+	"dousheng/dao/model"
 )
 
 func newComment(db *gorm.DB, opts ...gen.DOOption) comment {

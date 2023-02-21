@@ -1,6 +1,6 @@
 package service
 
-import "tk/dao/model"
+import "dousheng/dao/model"
 
 type CommentService interface {
 	Comment(comment model.Comment) error

@@ -16,7 +16,7 @@ import (
 
 	"gorm.io/plugin/dbresolver"
 
-	"tk/dao/model"
+	"dousheng/dao/model"
 )
 
 func newMessage(db *gorm.DB, opts ...gen.DOOption) message {

@@ -1,9 +1,9 @@
 package serviceImpl
 
 import (
+	"dousheng/dao"
+	"dousheng/dao/model"
 	"time"
-	"tk/dao"
-	"tk/dao/model"
 )
 
 func SendMsg(message model.Message) error {

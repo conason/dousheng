@@ -1,16 +1,16 @@
 package dao
 
 import (
+	"dousheng/dao/dal"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
 	"time"
-	"tk/dao/dal"
 )
 
 var DB *gorm.DB
 
-const dsn = "root:root@tcp(localhost:3306)/dousheng_db?charset=utf8mb4&parseTime=True&loc=Local"
+const dsn = "root:511518nibubda%@tcp(175.178.26.250:3307)/dousheng_db?charset=utf8mb4&parseTime=True&loc=Local"
 
 func Init() {
 	var err error

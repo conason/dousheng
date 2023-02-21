@@ -1,13 +1,14 @@
 package handlers
 
 import (
+	"dousheng/dao"
+	"dousheng/dao/model"
+	"dousheng/service/serviceImpl"
+	"dousheng/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
 	"time"
-	"tk/dao"
-	"tk/dao/model"
-	"tk/service/serviceImpl"
 )
 
 type Comment struct {
@@ -30,24 +31,28 @@ type DouyinCommentListResponse struct {
 }
 
 func CommentAction(ctx *gin.Context) {
-	userId, exists := ctx.Get("userId")
-	if !exists {
-		ctx.JSON(http.StatusOK, DouyinCommentActionResponse{
-			StatusCode: -1,
-			StatusMsg:  "user not logged in",
-			Comment:    Comment{},
-		})
-		return
-	}
-	userid, err := strconv.ParseInt(userId.(string), 10, 64)
-	if err != nil {
-		ctx.JSON(http.StatusOK, DouyinCommentActionResponse{
-			StatusCode: -1,
-			StatusMsg:  "invalid userId",
-			Comment:    Comment{},
-		})
-		return
-	}
+	//userId, exists := ctx.Get("userId")
+	//if !exists {
+	//	ctx.JSON(http.StatusOK, DouyinCommentActionResponse{
+	//		StatusCode: -1,
+	//		StatusMsg:  "user not logged in",
+	//		Comment:    Comment{},
+	//	})
+	//	return
+	//}
+	//userid, err := strconv.ParseInt(userId.(string), 10, 64)
+	//if err != nil {
+	//	ctx.JSON(http.StatusOK, DouyinCommentActionResponse{
+	//		StatusCode: -1,
+	//		StatusMsg:  "invalid userId",
+	//		Comment:    Comment{},
+	//	})
+	//	return
+	//}
+
+	//token解析
+	token := ctx.Query("token")
+	userId := utils.ParseToken(token)
 
 	//videoId解析
 	videoId := ctx.Query("video_id")
@@ -73,7 +78,7 @@ func CommentAction(ctx *gin.Context) {
 	}
 
 	//actionType解析
-	act := ctx.Query("action_type ")
+	act := ctx.Query("action_type")
 	actionType, err := strconv.ParseInt(act, 10, 64)
 	if err != nil {
 		ctx.JSON(http.StatusOK, DouyinCommentActionResponse{
@@ -85,7 +90,7 @@ func CommentAction(ctx *gin.Context) {
 	}
 
 	comment := model.Comment{
-		UserID:     userid,
+		UserID:     userId,
 		VideoID:    videoid,
 		Content:    text,
 		IsDeleted:  int32(actionType),
@@ -102,7 +107,7 @@ func CommentAction(ctx *gin.Context) {
 		return
 	}
 
-	user, err := dao.GetUserById(userid)
+	user, err := dao.GetUserById(userId)
 	if err != nil {
 		ctx.JSON(http.StatusOK, DouyinCommentActionResponse{
 			StatusCode: -1,

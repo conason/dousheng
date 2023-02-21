@@ -1,9 +1,9 @@
 package dao
 
 import (
+	"dousheng/dao/dal"
+	"dousheng/dao/model"
 	"time"
-	"tk/dao/dal"
-	"tk/dao/model"
 )
 
 func MessageSave(message model.Message) error {

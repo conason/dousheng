@@ -1,8 +1,8 @@
 package serviceImpl
 
 import (
-	"tk/dao"
-	"tk/dao/model"
+	"dousheng/dao"
+	"dousheng/dao/model"
 )
 
 func Comment(comment model.Comment) error {

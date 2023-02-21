@@ -3,11 +3,11 @@ package utils
 import (
 	"bytes"
 	"context"
+	"dousheng/config"
 	"fmt"
 	"github.com/qiniu/go-sdk/v7/auth/qbox"
 	"github.com/qiniu/go-sdk/v7/storage"
 	"time"
-	"tk/config"
 )
 
 func PushVideo(key string, data []byte) int32 {

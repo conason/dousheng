@@ -1,8 +1,8 @@
 package main
 
 import (
+	"dousheng/handlers"
 	"github.com/gin-gonic/gin"
-	"tk/handlers"
 )
 
 func InitRouter(r *gin.Engine) {

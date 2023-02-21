@@ -1,6 +1,6 @@
 package service
 
-import "tk/dao/model"
+import "dousheng/dao/model"
 
 type RelationService interface {
 	SubAction(userId, upId int64) error

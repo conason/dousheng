@@ -1,12 +1,12 @@
 package handlers
 
 import (
+	"dousheng/dao"
+	"dousheng/service/serviceImpl"
+	"dousheng/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
-	"tk/dao"
-	"tk/service/serviceImpl"
-	"tk/utils"
 )
 
 type DouyinFavoriteActionResponse struct {
@@ -22,15 +22,18 @@ type DouyinFavoriteListResponse struct {
 
 func FavAction(ctx *gin.Context) {
 	//userId解析
-	userIdStr := ctx.Query("user_id")
-	userid, err := strconv.ParseInt(userIdStr, 10, 64)
-	if err != nil {
-		ctx.JSON(http.StatusOK, DouyinFavoriteActionResponse{
-			StatusCode: -1,
-			StatusMsg:  "invalid userId",
-		})
-		return
-	}
+	//userIdStr := ctx.Query("user_id")
+	//userid, err := strconv.ParseInt(userIdStr, 10, 64)
+	//if err != nil {
+	//	ctx.JSON(http.StatusOK, DouyinFavoriteActionResponse{
+	//		StatusCode: -1,
+	//		StatusMsg:  "invalid userId",
+	//	})
+	//	return
+	//}
+
+	token := ctx.Query("token")
+	userId := utils.ParseToken(token)
 
 	//videoId解析
 	videoId := ctx.Query("video_id")
@@ -54,7 +57,7 @@ func FavAction(ctx *gin.Context) {
 		return
 	}
 
-	err = serviceImpl.FavAction(userid, videoid, int32(actionType))
+	err = serviceImpl.FavAction(userId, videoid, int32(actionType))
 	if err != nil {
 		ctx.JSON(http.StatusOK, DouyinFavoriteActionResponse{
 			StatusCode: -1,

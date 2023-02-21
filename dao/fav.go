@@ -1,8 +1,8 @@
 package dao
 
 import (
-	"tk/dao/dal"
-	"tk/dao/model"
+	"dousheng/dao/dal"
+	"dousheng/dao/model"
 )
 
 func Fav(favorite model.Favorite) error {
@@ -15,15 +15,11 @@ func Fav(favorite model.Favorite) error {
 
 func FavList(userId int64) ([]int64, error) {
 	var userIds []int64
-	favorites, err := dal.Favorite.Select(dal.Favorite.VideoID).
+	err := dal.Favorite.Select(dal.Favorite.VideoID).
 		Where(dal.Favorite.UserID.Eq(userId), dal.Favorite.IsDeleted.Eq(0)).
-		Find()
+		Scan(&userIds)
 	if err != nil {
 		return nil, err
-	}
-
-	for i, val := range favorites {
-		userIds[i] = val.UserID
 	}
 
 	return userIds, err

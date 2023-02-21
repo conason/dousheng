@@ -1,8 +1,8 @@
 package service
 
 import (
+	"dousheng/dao/model"
 	"time"
-	"tk/dao/model"
 )
 
 type MsgService interface {
