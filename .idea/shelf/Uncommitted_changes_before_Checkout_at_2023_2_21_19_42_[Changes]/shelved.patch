@@ -1,0 +1,481 @@
+Index: handlers/video.go
+===================================================================
+diff --git a/handlers/video.go b/handlers/video.go
+--- a/handlers/video.go	
++++ b/handlers/video.go	
+@@ -5,6 +5,7 @@
+ 	"github.com/gin-gonic/gin"
+ 	"net/http"
+ 	"strconv"
++	"strings"
+ 	"time"
+ 	"tk/dao"
+ 	"tk/dao/model"
+@@ -47,15 +48,19 @@
+ 	if err != nil {
+ 		utils.ResolveError(err)
+ 	}
+-	timeNext := time.Unix(timeInt, 0).Format("2006-01-02 15:04:05")
++	//timeNext := time.Unix(timeInt, 0).Format("2006-01-02 15:04:05")
++	timeNext, err := utils.TimestampToDate(timeInt)
+ 	utils.ResolveError(err)
+ 
+-	loc, err := time.LoadLocation("Asia/Shanghai")
+-	if err != nil {
+-		utils.ResolveError(err)
+-	}
+-	timeNow := time.Now().Format("2006-01-02 15:04:05")
+-	nowTime, err := time.ParseInLocation("2006-01-02 15:04:05", timeNow, loc)
++	//loc, err := time.LoadLocation("Asia/Shanghai")
++	//if err != nil {
++	//	utils.ResolveError(err)
++	//}
++	//timeNow := time.Now().Format("2006-01-02 15:04:05")
++	//nowTime, err := time.ParseInLocation("2006-01-02 15:04:05", timeNow, loc)
++	//utils.ResolveError(err)
++
++	timestamp, err := utils.GetTimestamp()
+ 	utils.ResolveError(err)
+ 
+ 	videoData, count := dao.GetVideo(timeNext)
+@@ -63,14 +68,42 @@
+ 		return
+ 	}
+ 	if count == 0 {
+-		c.JSON(http.StatusOK, DouyinFeedResponse{
+-			StatusCode: -1,
+-			StatusMsg:  "Reach bottom of video list",
+-			VideoList:  nil,
+-			NextTime:   nowTime.Unix(),
+-		})
+-	}
++		videoData, count, err = dao.GetNewestVideos()
++		if err != nil {
++			c.JSON(http.StatusOK, DouyinFeedResponse{
++				StatusCode: -1,
++				StatusMsg:  "server is busy please try again",
++				VideoList:  nil,
++				NextTime:   timestamp,
++			})
++		}
+ 
++		videos, err := getVideos(videoData, count)
++		utils.ResolveError(err)
++
++		c.JSON(http.StatusOK, DouyinFeedResponse{
++			StatusCode: -1,
++			StatusMsg:  "feed video",
++			VideoList:  videos,
++			NextTime:   videos[0].UpdateDate.Unix(),
++		})
++		return
++	}
++
++	videos, err := getVideos(videoData, count)
++	utils.ResolveError(err)
++
++	//feed响应
++	c.JSON(http.StatusOK, DouyinFeedResponse{
++		StatusCode: 0,
++		StatusMsg:  "feed video",
++		VideoList:  videos,
++		NextTime:   videos[0].UpdateDate.Unix(),
++	})
++
++}
++
++func getVideos(videoData []model.Video, count int64) ([]Video, error) {
+ 	video := make([]Video, count)
+ 	for i := 0; i < int(count); i++ {
+ 		userId := videoData[i].UserID
+@@ -86,42 +119,10 @@
+ 			FavoriteCount: videoData[i].FavoriteCount,
+ 			CommentCount:  videoData[i].CommentCount,
+ 			Title:         videoData[i].Title,
+-			CreateDate:    videoData[i].CreateDate,
+-			UpdateDate:    videoData[i].UpdateDate,
+ 		}
+ 	}
+ 
+-	//feed响应
+-	c.JSON(http.StatusOK, DouyinFeedResponse{
+-		StatusCode: 0,
+-		StatusMsg:  "feed video",
+-		VideoList:  video,
+-		NextTime:   nowTime.Unix(),
+-	})
+-
+-	//videoAndAuthor := make([]model.Video, count)
+-	//for i := 0; i < int(count); i++ {
+-	//	user := model.GetUserData(videoData[i].Id)
+-	//	videoAndAuthor[i].Id = videoData[i].VideoId
+-	//	videoAndAuthor[i].PlayUrl = videoData[i].PlayUrl
+-	//	videoAndAuthor[i].CoverUrl = videoData[i].CoverUrl
+-	//	videoAndAuthor[i].CommentCount = videoData[i].CommentCount
+-	//	videoAndAuthor[i].FavoriteCount = videoData[i].FavoriteCount
+-	//	videoAndAuthor[i].IsFavorite = videoData[i].IsFavorite
+-	//	videoAndAuthor[i].Title = videoData[i].Title
+-	//	videoAndAuthor[i].Author = user
+-	//}
+-	//timeNow, err := strconv.ParseInt(time.Now().Format("2006-01-02 15:04"), 10, 64)
+-	//utils.ResolveError(err)
+-	//videoLists := model.VideoLists{
+-	//	Response: model.Response{
+-	//		StatusCode: utils.SUCCESS,
+-	//		StatusMsg:  utils.GetStatusMsg(utils.VIDEO_GET_SUCCESS),
+-	//	},
+-	//	NextTime:  int32(timeNow),
+-	//	VideoList: videoAndAuthor,
+-	//}
+-	//c.JSON(http.StatusOK, videoLists)
++	return video, nil
+ }
+ 
+ // VideoPublish 视频发布
+@@ -140,9 +141,9 @@
+ 		})
+ 		return
+ 	}
+-
++	//token解析
+ 	userId := utils.ParseToken(token)
+-
++	//将*multipart.FileHeader类型转化为[]byte
+ 	parseVideo, err := dao.ParseVideo(videoData)
+ 	if err != nil {
+ 		c.JSON(http.StatusOK, DouyinPublishActionResponse{
+@@ -151,10 +152,13 @@
+ 		})
+ 		return
+ 	}
+-
+-	key := fmt.Sprintf("%s.mp4", title)
+-	fmt.Printf("%s\n", title)
+-	code := utils.PushVideo(key, parseVideo)
++	//视频文件名
++	videoName := fmt.Sprintf("%s.mp4", title)
++	//封面文件名
++	coverName := strings.Replace(videoName, ".mp4", ".jpeg", 1)
++	//fmt.Printf("%s\n", title)
++	//视频上传
++	code := utils.PushVideo(videoName, parseVideo)
+ 	if code != 0 {
+ 		c.JSON(http.StatusOK, DouyinPublishActionResponse{
+ 			StatusCode: -1,
+@@ -162,8 +166,9 @@
+ 		})
+ 		return
+ 	}
+-
+-	playURL := utils.GetVideo(key)
++	//获取playURL
++	playURL := utils.GetVideo(videoName)
++	//上传至数据库
+ 	err = dao.PushVideoToMysql(userId, playURL, "", title)
+ 	if err != nil {
+ 		c.JSON(http.StatusOK, DouyinPublishActionResponse{
+@@ -178,23 +183,6 @@
+ 		StatusMsg:  "publish_action successfully",
+ 	})
+ 
+-	//userId := utils.ParseToken(token)
+-	//data := model.ParseVideo(videoData)
+-	//key := fmt.Sprintf("%s.mp4", title)
+-	//code := utils.PushVideo(key, data)
+-	//if code == utils.SUCCESS {
+-	//	model.PushVideoToMysql(userId, utils.GetVideo(fmt.Sprintf("%s.mp4", title)), "", title)
+-	//	c.JSON(http.StatusOK, model.Response{
+-	//		StatusCode: utils.SUCCESS,
+-	//		StatusMsg:  utils.GetStatusMsg(utils.VIDEO_PUSH_SUCCESS),
+-	//	})
+-	//} else {
+-	//	c.JSON(http.StatusOK, model.Response{
+-	//		StatusCode: utils.FAIL,
+-	//		StatusMsg:  utils.GetStatusMsg(utils.VIDEO_PUSH_FAIL),
+-	//	})
+-	//}
+-
+ }
+ 
+ func PublishList(ctx *gin.Context) {
+@@ -228,8 +216,6 @@
+ 			FavoriteCount: videos[i].FavoriteCount,
+ 			CommentCount:  videos[i].CommentCount,
+ 			Title:         videos[i].Title,
+-			CreateDate:    videos[i].CreateDate,
+-			UpdateDate:    videos[i].UpdateDate,
+ 		}
+ 	}
+ 	ctx.JSON(http.StatusOK, DouyinPublishListResponse{
+Index: handlers/fav.go
+===================================================================
+diff --git a/handlers/fav.go b/handlers/fav.go
+--- a/handlers/fav.go	
++++ b/handlers/fav.go	
+@@ -22,15 +22,18 @@
+ 
+ func FavAction(ctx *gin.Context) {
+ 	//userId解析
+-	userIdStr := ctx.Query("user_id")
+-	userid, err := strconv.ParseInt(userIdStr, 10, 64)
+-	if err != nil {
+-		ctx.JSON(http.StatusOK, DouyinFavoriteActionResponse{
+-			StatusCode: -1,
+-			StatusMsg:  "invalid userId",
+-		})
+-		return
+-	}
++	//userIdStr := ctx.Query("user_id")
++	//userid, err := strconv.ParseInt(userIdStr, 10, 64)
++	//if err != nil {
++	//	ctx.JSON(http.StatusOK, DouyinFavoriteActionResponse{
++	//		StatusCode: -1,
++	//		StatusMsg:  "invalid userId",
++	//	})
++	//	return
++	//}
++
++	token := ctx.Query("token")
++	userId := utils.ParseToken(token)
+ 
+ 	//videoId解析
+ 	videoId := ctx.Query("video_id")
+@@ -54,7 +57,7 @@
+ 		return
+ 	}
+ 
+-	err = serviceImpl.FavAction(userid, videoid, int32(actionType))
++	err = serviceImpl.FavAction(userId, videoid, int32(actionType))
+ 	if err != nil {
+ 		ctx.JSON(http.StatusOK, DouyinFavoriteActionResponse{
+ 			StatusCode: -1,
+Index: dao/video.go
+===================================================================
+diff --git a/dao/video.go b/dao/video.go
+--- a/dao/video.go	
++++ b/dao/video.go	
+@@ -58,13 +58,13 @@
+ }
+ 
+ // GetVideo 按照time降序的方式查找config.N个视频信息
+-func GetVideo(timeStr string) ([]model.Video, int64) {
++func GetVideo(data time.Time) ([]model.Video, int64) {
+ 	var videos []model.Video
+-	timeNext, err := time.Parse("2006-01-02 15:04:05", timeStr)
+-	if err != nil {
+-		return nil, 0
+-	}
+-	err = dal.Video.Where(dal.Video.CreateDate.Lt(timeNext)).
++	//timeNext, err := time.Parse("2006-01-02 15:04:05", timeStr)
++	//if err != nil {
++	//	return nil, 0
++	//}
++	err := dal.Video.Where(dal.Video.CreateDate.Gt(data)).
+ 		Order(dal.Video.CreateDate.Desc()).
+ 		Limit(config.N).
+ 		Scan(&videos)
+@@ -75,7 +75,7 @@
+ 	//if count >= 5 {
+ 	//	count = 5
+ 	//}
+-	count := cap(videos)
++	count := len(videos)
+ 	return videos, int64(count)
+ }
+ 
+@@ -96,3 +96,16 @@
+ 	}
+ 	return video, nil
+ }
++
++func GetNewestVideos() ([]model.Video, int64, error) {
++	var videos []model.Video
++	err := dal.Video.Order(dal.Video.UpdateDate.Desc()).
++		Limit(config.N).
++		Scan(&videos)
++	if err != nil {
++		return nil, 0, err
++	}
++
++	return videos, int64(len(videos)), nil
++
++}
+Index: handlers/relation.go
+===================================================================
+diff --git a/handlers/relation.go b/handlers/relation.go
+--- a/handlers/relation.go	
++++ b/handlers/relation.go	
+@@ -6,7 +6,14 @@
+ 	"strconv"
+ 	"tk/dao/model"
+ 	"tk/service/serviceImpl"
++	"tk/utils"
+ )
++
++type FriendUser struct {
++	user    model.User `json:"user"`
++	message string     `json:"message"`
++	msgType int64      `json:"msgType"`
++}
+ 
+ type DouyinRelationActionResponse struct {
+ 	StatusCode int32  `protobuf:"varint,1,opt,name=status_code,json=statusCode,proto3" json:"status_code,omitempty"`   // 状态码，0-成功，其他值-失败
+@@ -35,7 +42,6 @@
+ 	token := ctx.Query("token")
+ 	toUserIdStr := ctx.Query("to_user_id")
+ 	actionStr := ctx.Query("action_type")
+-	userId, exists := ctx.Get("user_id")
+ 
+ 	if token == "" {
+ 		ctx.JSON(http.StatusOK, DouyinRelationActionResponse{
+@@ -44,14 +50,8 @@
+ 		})
+ 		return
+ 	}
+-
+-	if !exists {
+-		ctx.JSON(http.StatusOK, DouyinRelationActionResponse{
+-			StatusCode: -1,
+-			StatusMsg:  "unknown user",
+-		})
+-		return
+-	}
++	//token解析
++	userId := utils.ParseToken(token)
+ 
+ 	toUserId, err := strconv.ParseInt(toUserIdStr, 10, 64)
+ 	if err != nil {
+@@ -71,7 +71,7 @@
+ 		return
+ 	}
+ 
+-	err = serviceImpl.SubAction(userId.(int64), toUserId, actionType)
++	err = serviceImpl.SubAction(userId, toUserId, actionType)
+ 	if err != nil {
+ 		ctx.JSON(http.StatusOK, DouyinRelationActionResponse{
+ 			StatusCode: -1,
+Index: dao/fav.go
+===================================================================
+diff --git a/dao/fav.go b/dao/fav.go
+--- a/dao/fav.go	
++++ b/dao/fav.go	
+@@ -15,16 +15,12 @@
+ 
+ func FavList(userId int64) ([]int64, error) {
+ 	var userIds []int64
+-	favorites, err := dal.Favorite.Select(dal.Favorite.VideoID).
++	err := dal.Favorite.Select(dal.Favorite.VideoID).
+ 		Where(dal.Favorite.UserID.Eq(userId), dal.Favorite.IsDeleted.Eq(0)).
+-		Find()
++		Scan(&userIds)
+ 	if err != nil {
+ 		return nil, err
+ 	}
+ 
+-	for i, val := range favorites {
+-		userIds[i] = val.UserID
+-	}
+-
+ 	return userIds, err
+ }
+Index: dao/init.go
+===================================================================
+diff --git a/dao/init.go b/dao/init.go
+--- a/dao/init.go	
++++ b/dao/init.go	
+@@ -10,7 +10,7 @@
+ 
+ var DB *gorm.DB
+ 
+-const dsn = "root:root@tcp(localhost:3306)/dousheng_db?charset=utf8mb4&parseTime=True&loc=Local"
++const dsn = "root:511518nibubda%@tcp(175.178.26.250:3307)/dousheng_db?charset=utf8mb4&parseTime=True&loc=Local"
+ 
+ func Init() {
+ 	var err error
+Index: handlers/comment.go
+===================================================================
+diff --git a/handlers/comment.go b/handlers/comment.go
+--- a/handlers/comment.go	
++++ b/handlers/comment.go	
+@@ -8,6 +8,7 @@
+ 	"tk/dao"
+ 	"tk/dao/model"
+ 	"tk/service/serviceImpl"
++	"tk/utils"
+ )
+ 
+ type Comment struct {
+@@ -30,24 +31,28 @@
+ }
+ 
+ func CommentAction(ctx *gin.Context) {
+-	userId, exists := ctx.Get("userId")
+-	if !exists {
+-		ctx.JSON(http.StatusOK, DouyinCommentActionResponse{
+-			StatusCode: -1,
+-			StatusMsg:  "user not logged in",
+-			Comment:    Comment{},
+-		})
+-		return
+-	}
+-	userid, err := strconv.ParseInt(userId.(string), 10, 64)
+-	if err != nil {
+-		ctx.JSON(http.StatusOK, DouyinCommentActionResponse{
+-			StatusCode: -1,
+-			StatusMsg:  "invalid userId",
+-			Comment:    Comment{},
+-		})
+-		return
+-	}
++	//userId, exists := ctx.Get("userId")
++	//if !exists {
++	//	ctx.JSON(http.StatusOK, DouyinCommentActionResponse{
++	//		StatusCode: -1,
++	//		StatusMsg:  "user not logged in",
++	//		Comment:    Comment{},
++	//	})
++	//	return
++	//}
++	//userid, err := strconv.ParseInt(userId.(string), 10, 64)
++	//if err != nil {
++	//	ctx.JSON(http.StatusOK, DouyinCommentActionResponse{
++	//		StatusCode: -1,
++	//		StatusMsg:  "invalid userId",
++	//		Comment:    Comment{},
++	//	})
++	//	return
++	//}
++
++	//token解析
++	token := ctx.Query("token")
++	userId := utils.ParseToken(token)
+ 
+ 	//videoId解析
+ 	videoId := ctx.Query("video_id")
+@@ -73,7 +78,7 @@
+ 	}
+ 
+ 	//actionType解析
+-	act := ctx.Query("action_type ")
++	act := ctx.Query("action_type")
+ 	actionType, err := strconv.ParseInt(act, 10, 64)
+ 	if err != nil {
+ 		ctx.JSON(http.StatusOK, DouyinCommentActionResponse{
+@@ -85,7 +90,7 @@
+ 	}
+ 
+ 	comment := model.Comment{
+-		UserID:     userid,
++		UserID:     userId,
+ 		VideoID:    videoid,
+ 		Content:    text,
+ 		IsDeleted:  int32(actionType),
+@@ -102,7 +107,7 @@
+ 		return
+ 	}
+ 
+-	user, err := dao.GetUserById(userid)
++	user, err := dao.GetUserById(userId)
+ 	if err != nil {
+ 		ctx.JSON(http.StatusOK, DouyinCommentActionResponse{
+ 			StatusCode: -1,
