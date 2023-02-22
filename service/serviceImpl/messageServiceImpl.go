@@ -3,7 +3,7 @@ package serviceImpl
 import (
 	"dousheng/dao"
 	"dousheng/dao/model"
-	"time"
+	"dousheng/utils"
 )
 
 func SendMsg(message model.Message) error {
@@ -14,8 +14,21 @@ func SendMsg(message model.Message) error {
 	return nil
 }
 
-func ReceiveMsg(userId int64, preTime time.Time) ([]model.Message, error) {
-	messages, err := dao.GetMessageToUser(userId, preTime)
+func ReceiveMsg(userId, toUserId, preTimeInt int64) ([]model.Message, error) {
+	if preTimeInt == 0 {
+		messages, err := dao.GetAllMsgToUser(userId, toUserId)
+		if err != nil {
+			return nil, err
+		}
+		return messages, nil
+	}
+
+	date, err := utils.TimestampToDate(preTimeInt)
+	if err != nil {
+		return nil, err
+	}
+
+	messages, err := dao.GetMessageToUser(userId, toUserId, date)
 	if err != nil {
 		return nil, err
 	}
