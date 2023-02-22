@@ -4,7 +4,6 @@ import (
 	"dousheng/dao/model"
 	"dousheng/service/serviceImpl"
 	"dousheng/utils"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -128,9 +127,10 @@ func Receive(ctx *gin.Context) {
 		})
 		return
 	}
-
-	messages := transMsg(msg)
-
+	var messages []Message
+	if msg != nil {
+		messages = transMsg(msg)
+	}
 	ctx.JSON(http.StatusOK, DouyinMessageChatResponse{
 		StatusCode:  0,
 		StatusMsg:   "receive message successfully",
@@ -149,7 +149,7 @@ func transMsg(msg []model.Message) []Message {
 			Content:    msg[i].Content,
 			CreateTime: msg[i].CreateTime.Unix(),
 		}
-		fmt.Println(msg[i].CreateTime.Unix())
+		//fmt.Printf("msgTime:%v\n", msg[i].CreateTime.Unix())
 	}
 	return messages
 }
