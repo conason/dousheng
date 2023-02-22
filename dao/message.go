@@ -14,14 +14,28 @@ func MessageSave(message model.Message) error {
 	return nil
 }
 
-func GetMessageToUser(userId int64, preTime time.Time) ([]model.Message, error) {
+func GetMessageToUser(userId, toUserId int64, preTime time.Time) ([]model.Message, error) {
 	var msg []model.Message
-	err := dal.Message.Where(dal.Message.ToUserID.Eq(userId), dal.Message.CreateTime.Gt(preTime)).
-		Order(dal.Message.CreateTime.Desc()).
+	err := dal.Message.Where(
+		dal.Message.ToUserID.Eq(userId),
+		dal.Message.FromUserID.Eq(toUserId),
+		dal.Message.CreateTime.Gt(preTime)).
+		Order(dal.Message.CreateTime).
 		Scan(&msg)
 	if err != nil {
 		return nil, err
 	}
 
+	return msg, nil
+}
+
+func GetAllMsgToUser(userId, toUserId int64) ([]model.Message, error) {
+	var msg []model.Message
+	err := dal.Message.Where(dal.Message.ToUserID.Eq(userId), dal.Message.FromUserID.Eq(toUserId)).
+		Order(dal.Message.CreateTime).
+		Scan(&msg)
+	if err != nil {
+		return nil, err
+	}
 	return msg, nil
 }

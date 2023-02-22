@@ -4,16 +4,9 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a1532b8c-b49c-4f84-a1cc-f0fa4fdd4602" name="Changes" comment="cover upload-unTest">
+    <list default="true" id="10b93ea2-0b3e-4a53-825a-6caa710396b6" name="Changes" comment="Merge branch 'conason-gin'&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dao/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/user.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dao/video.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/video.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/handlers/fav.go" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/fav.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/handlers/message.go" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/message.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/serviceImpl/commentServiceImpl.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/serviceImpl/commentServiceImpl.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/serviceImpl/favServiceImpl.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/serviceImpl/favServiceImpl.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/serviceImpl/relationServiceImpl.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/serviceImpl/relationServiceImpl.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/serviceImpl/videoServiceImpl.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/serviceImpl/videoServiceImpl.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dao/message.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/message.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -72,7 +65,7 @@
     &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
     &quot;go.sdk.automatically.set&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;D:/GoSpace/src/chigo&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;go.sdk&quot;
+    &quot;settings.editor.selected.configurable&quot;: &quot;go.vgo&quot;
   }
 }</component>
   <component name="RecentsManager">
@@ -189,7 +182,9 @@
     <MESSAGE value="基本功能全部完成,待测试调整" />
     <MESSAGE value="videoPublishTest" />
     <MESSAGE value="basicComplete" />
-    <option name="LAST_COMMIT_MESSAGE" value="basicComplete" />
+    <MESSAGE value="chat module completed" />
+    <MESSAGE value="Merge branch 'conason-gin'&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml" />
+    <option name="LAST_COMMIT_MESSAGE" value="Merge branch 'conason-gin'&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
