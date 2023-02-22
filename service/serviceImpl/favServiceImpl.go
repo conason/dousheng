@@ -14,7 +14,12 @@ func FavAction(userId int64, videoId int64, actionType int32) error {
 		CreateTime: time.Now(),
 	}
 	if actionType == 2 {
-		favorite.IsDeleted = 1
+		favorite = model.Favorite{
+			UserID:     userId,
+			VideoID:    videoId,
+			IsDeleted:  1,
+			CreateTime: time.Now(),
+		}
 	}
 	//更新、插入fav表，以及更新video表
 	//fav表操作

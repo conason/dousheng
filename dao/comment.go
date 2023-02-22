@@ -14,30 +14,32 @@ func SaveComment(comment model.Comment) error {
 }
 
 func GetCommentByUserId(userId int64) ([]model.Comment, error) {
-	find, err := dal.Comment.Where(dal.Comment.UserID.Eq(userId), dal.Comment.IsDeleted.Eq(0)).
+	var comments []model.Comment
+	err := dal.Comment.Where(dal.Comment.UserID.Eq(userId), dal.Comment.IsDeleted.Eq(0)).
 		Order(dal.Comment.CreateTime.Desc()).
-		Find()
+		Scan(&comments)
 	if err != nil {
 		return nil, err
 	}
-	var comments []model.Comment
-	for i, comment := range find {
-		comments[i] = *comment
-	}
+	//var comments []model.Comment
+	//for i, comment := range find {
+	//	comments[i] = *comment
+	//}
 
 	return comments, err
 }
 
 func GetCommentByVideoId(videoId int64) ([]model.Comment, error) {
-	find, err := dal.Comment.Where(dal.Comment.VideoID.Eq(videoId), dal.Comment.IsDeleted.Eq(0)).
+	var comments []model.Comment
+	err := dal.Comment.Where(dal.Comment.VideoID.Eq(videoId), dal.Comment.IsDeleted.Eq(0)).
 		Order(dal.Comment.CreateTime.Desc()).
-		Find()
+		Scan(&comments)
 	if err != nil {
 		return nil, err
 	}
-	var comments []model.Comment
-	for i, comment := range find {
-		comments[i] = *comment
-	}
+	//var comments []model.Comment
+	//for i, comment := range find {
+	//	comments[i] = *comment
+	//}
 	return comments, err
 }

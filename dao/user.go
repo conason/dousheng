@@ -3,44 +3,20 @@ package dao
 import (
 	"dousheng/dao/dal"
 	"dousheng/dao/model"
-	"errors"
-	"time"
 )
 
-// Register 用户注册
-func Register(username, password string) (int64, error) {
-	user := model.User{
-		Name:       username,
-		Password:   password,
-		CreateTime: time.Now(),
-	}
-
+// SaveUser 用户注册
+func SaveUser(user model.User) error {
 	err := dal.User.Create(&user)
 	if err != nil {
-		return -1, err
+		return err
 	}
 
-	return 0, nil
-
-	//findUser, err := FindUser(username)
-	//if err != nil {
-	//	return -1, err
-	//}
-
-	//if findUser == 0 {
-
-	//db.Db.Model(&user{}).Create(map[string]interface{}{"username": username, "password": password})
-	//fmt.Println("用户创建成功")
-	//return utils.SUCCESS
-	//}
-
-	//return -1, errors.New("creat user fail")
-	//fmt.Println("用户创建失败")
-	//return utils.FAIL
+	return nil
 }
 
-// FindUser 通过username查找用户并返回其id
-func FindUser(username string) (int64, error) {
+// GetUserIdByName 通过username查找用户并返回其id
+func GetUserIdByName(username string) (int64, error) {
 	var user int64
 	err := dal.User.
 		Select(dal.User.ID).
@@ -48,33 +24,21 @@ func FindUser(username string) (int64, error) {
 	if err != nil {
 		return 0, err
 	}
-	if err != nil {
-		return -1, err
-	}
-	if user == 0 {
-		return 0, nil
-	}
 
 	return user, nil
 }
 
-// FindUserWithId 通过用户id判断用户是否存在
-func FindUserWithId(userId int64) (bool, error) {
+// CountUserId 通过用户id判断用户是否存在
+func CountUserId(userId int64) (int64, error) {
 	count, err := dal.User.
 		Select(dal.User.ID).
 		Where(dal.User.ID.Eq(userId)).
 		Count()
 	if err != nil {
-		return false, err
+		return 0, err
 	}
 
-	//user := user{}
-	//db.Db.Where("id = ?",id).Find(&user).Limit(1)
-	if count == 0 {
-		return false, nil
-	}
-
-	return true, nil
+	return count, nil
 }
 
 // GetUserData 通过传入的id从数据库获取用户信息
@@ -85,40 +49,20 @@ func GetUserData(userId int64) (model.User, error) {
 		return model.User{}, err
 	}
 
-	if user == (model.User{}) {
-		return model.User{}, errors.New("no such user")
-	}
-
 	return user, nil
-
-	//user := User{}
-	//db.Db.Where("id=?", id).First(&user)
-	//return user
 }
 
-// Login 用户登录
-func Login(username, password string) (int64, bool, error) {
-
-	user, err := dal.User.Where(dal.User.Name.Eq(username)).First()
+// GetPWDByName 用户登录
+func GetPWDByName(username string) (string, error) {
+	var pwd string
+	err := dal.User.Select(dal.User.Password).
+		Where(dal.User.Name.Eq(username)).
+		Scan(&pwd)
 	if err != nil {
-		return 0, false, err
+		return "", err
 	}
 
-	if user.Password != password {
-		return -1, false, nil //errors.New("incorrect account password")
-	}
-
-	return user.ID, true, nil
-	//else {
-
-	//db.Db.Where("username=?", username).First(&userData)
-	//if userData.Password == password {
-	//	res = true
-	//} else {
-	//	res = false
-	//}
-	//}
-	//return res
+	return pwd, nil
 }
 
 func GetUserById(userId int64) (model.User, error) {

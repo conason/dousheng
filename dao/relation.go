@@ -6,12 +6,30 @@ import (
 )
 
 func RelationSave(relation model.Relation) error {
+	var exits model.Relation
 	err := dal.Relation.
+		Where(dal.Relation.FollowerID.Eq(relation.FollowerID), dal.Relation.FollowingID.Eq(relation.FollowingID)).
+		Scan(&exits)
+	if err != nil {
+		return err
+	}
+
+	if exits != (model.Relation{}) {
+		_, err := dal.Relation.
+			Where(dal.Relation.FollowerID.Eq(relation.FollowerID), dal.Relation.FollowingID.Eq(relation.FollowingID)).
+			Update(dal.Relation.Isdeleted, relation.Isdeleted)
+		if err != nil {
+			return err
+		}
+	}
+
+	err = dal.Relation.
 		Where(dal.Relation.FollowerID.Eq(relation.FollowerID), dal.Relation.FollowingID.Eq(relation.FollowingID)).
 		Save(&relation)
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 

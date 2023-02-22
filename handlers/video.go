@@ -3,6 +3,7 @@ package handlers
 import (
 	"dousheng/dao"
 	"dousheng/dao/model"
+	"dousheng/service/serviceImpl"
 	"dousheng/utils"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -42,32 +43,23 @@ type DouyinPublishListResponse struct {
 }
 
 func Feed(c *gin.Context) {
+
 	latestTime := c.Query("latest_time")
 	timeInt, err := strconv.ParseInt(latestTime, 10, 64)
 	if err != nil {
 		utils.ResolveError(err)
 	}
-	//timeNext := time.Unix(timeInt, 0).Format("2006-01-02 15:04:05")
+
+	//时间戳转日期
 	timeNext, err := utils.TimestampToDate(timeInt)
 	utils.ResolveError(err)
-
-	//loc, err := time.LoadLocation("Asia/Shanghai")
-	//if err != nil {
-	//	utils.ResolveError(err)
-	//}
-	//timeNow := time.Now().Format("2006-01-02 15:04:05")
-	//nowTime, err := time.ParseInLocation("2006-01-02 15:04:05", timeNow, loc)
-	//utils.ResolveError(err)
 
 	timestamp, err := utils.GetTimestamp()
 	utils.ResolveError(err)
 
-	videoData, count := dao.GetVideo(timeNext)
-	if err != nil {
-		return
-	}
-	if count == 0 {
-		videoData, count, err = dao.GetNewestVideos()
+	videoData, err := serviceImpl.GetVideo(timeNext)
+	if err != nil || len(videoData) == 0 {
+		videoData, err = dao.GetNewestVideos()
 		if err != nil {
 			c.JSON(http.StatusOK, DouyinFeedResponse{
 				StatusCode: -1,
@@ -77,7 +69,7 @@ func Feed(c *gin.Context) {
 			})
 		}
 
-		videos, err := getVideos(videoData, count)
+		videos, err := transformVideos(videoData)
 		utils.ResolveError(err)
 
 		c.JSON(http.StatusOK, DouyinFeedResponse{
@@ -89,7 +81,7 @@ func Feed(c *gin.Context) {
 		return
 	}
 
-	videos, err := getVideos(videoData, count)
+	videos, err := transformVideos(videoData)
 	utils.ResolveError(err)
 
 	//feed响应
@@ -100,28 +92,6 @@ func Feed(c *gin.Context) {
 		NextTime:   videos[0].UpdateDate.Unix(),
 	})
 
-}
-
-func getVideos(videoData []model.Video, count int64) ([]Video, error) {
-	video := make([]Video, count)
-	for i := 0; i < int(count); i++ {
-		userId := videoData[i].UserID
-		user, err := dao.GetUserData(userId)
-		if err != nil {
-			utils.ResolveError(err)
-		}
-		video[i] = Video{
-			ID:            videoData[i].ID,
-			User:          user,
-			PlayURL:       videoData[i].PlayURL,
-			CoverURL:      videoData[i].CoverURL,
-			FavoriteCount: videoData[i].FavoriteCount,
-			CommentCount:  videoData[i].CommentCount,
-			Title:         videoData[i].Title,
-		}
-	}
-
-	return video, nil
 }
 
 // VideoPublish 视频发布
@@ -143,7 +113,7 @@ func VideoPublish(c *gin.Context) {
 	//token解析
 	userId := utils.ParseToken(token)
 	//将*multipart.FileHeader类型转化为[]byte
-	parseVideo, err := dao.ParseVideo(videoData)
+	parseVideo, err := serviceImpl.ParseVideo(videoData)
 	if err != nil {
 		c.JSON(http.StatusOK, DouyinPublishActionResponse{
 			StatusCode: -1,
@@ -168,7 +138,7 @@ func VideoPublish(c *gin.Context) {
 	//获取playURL
 	playURL := utils.GetVideo(videoName)
 	//上传至数据库
-	err = dao.PushVideoToMysql(userId, playURL, "", title)
+	err = serviceImpl.PushVideoToMysql(userId, playURL, "", title)
 	if err != nil {
 		c.JSON(http.StatusOK, DouyinPublishActionResponse{
 			StatusCode: -1,
@@ -222,4 +192,26 @@ func PublishList(ctx *gin.Context) {
 		StatusMsg:  "get publish_list successfully",
 		VideoList:  videoList,
 	})
+}
+
+func transformVideos(videoData []model.Video) ([]Video, error) {
+	count := len(videoData)
+	video := make([]Video, count)
+	for i := 0; i < int(count); i++ {
+		userId := videoData[i].UserID
+		user, err := dao.GetUserData(userId)
+		if err != nil {
+			utils.ResolveError(err)
+		}
+		video[i] = Video{
+			ID:            videoData[i].ID,
+			User:          user,
+			PlayURL:       videoData[i].PlayURL,
+			CoverURL:      videoData[i].CoverURL,
+			FavoriteCount: videoData[i].FavoriteCount,
+			CommentCount:  videoData[i].CommentCount,
+			Title:         videoData[i].Title,
+		}
+	}
+	return video, nil
 }

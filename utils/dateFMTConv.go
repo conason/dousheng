@@ -1,12 +1,16 @@
 package utils
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 var templateTime = "2006-01-02 15:04:05"
 var loc = "Asia/Shanghai"
 
 func DateToTimestamp(timeStr string) (int64, error) {
 	parse, err := time.Parse(templateTime, timeStr)
+	fmt.Println(parse)
 	if err != nil {
 		return 0, err
 	}
@@ -14,7 +18,14 @@ func DateToTimestamp(timeStr string) (int64, error) {
 }
 
 func TimestampToDate(stamp int64) (time.Time, error) {
-	dateStr := time.Unix(stamp, 0).Format(templateTime)
+	now := time.Now()
+	if stamp > now.Unix() {
+		return now, nil
+	}
+	fmt.Println(stamp)
+	timeU := time.Unix(stamp, 0)
+	dateStr := timeU.Format(templateTime)
+	fmt.Println(dateStr)
 	date, err := time.Parse(templateTime, dateStr)
 	if err != nil {
 		return time.Time{}, err

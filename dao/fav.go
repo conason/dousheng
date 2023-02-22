@@ -2,11 +2,24 @@ package dao
 
 import (
 	"dousheng/dao/dal"
-	"dousheng/dao/model"
+	model "dousheng/dao/model"
 )
 
 func Fav(favorite model.Favorite) error {
-	err := dal.Favorite.Where(dal.Favorite.VideoID.Eq(favorite.VideoID), dal.Favorite.UserID.Eq(favorite.UserID)).Save(&favorite)
+	var fav model.Favorite
+	err := dal.Favorite.Where(dal.Favorite.VideoID.Eq(favorite.VideoID), dal.Favorite.UserID.Eq(favorite.UserID)).Scan(&fav)
+	if err != nil {
+		return err
+	}
+
+	if fav != (model.Favorite{}) {
+		_, err := dal.Favorite.Where(dal.Favorite.VideoID.Eq(favorite.VideoID), dal.Favorite.UserID.Eq(favorite.UserID)).Update(dal.Favorite.IsDeleted, favorite.IsDeleted)
+		if err != nil {
+			return err
+		}
+	}
+
+	err = dal.Favorite.Where(dal.Favorite.VideoID.Eq(favorite.VideoID), dal.Favorite.UserID.Eq(favorite.UserID)).Save(&favorite)
 	if err != nil {
 		return err
 	}
