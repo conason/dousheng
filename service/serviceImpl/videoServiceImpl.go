@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"dousheng/dao"
 	"dousheng/dao/model"
-	"dousheng/handlers"
 	"dousheng/utils"
 	"errors"
 	"fmt"
@@ -100,11 +99,16 @@ func PushVideoToMysql(userId int64, playUrl, coverUrl, title string) error {
 		CreateDate: now,
 		UpdateDate: now,
 	}
-
+	//事务
 	err := dao.SaveVideo(video)
 	if err != nil {
 		return err
 	}
+	err = dao.AddWorkCount(userId, 1)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -137,32 +141,6 @@ func GetNewestVideos() ([]model.Video, error) {
 	videos, err := dao.GetNewestVideos()
 	if err != nil {
 		return nil, err
-	}
-	return videos, nil
-}
-
-func GetFavListVideo(userId int64, favList []int64) ([]handlers.Video, error) {
-	len := len(favList)
-	videos := make([]handlers.Video, len)
-	user, err := dao.GetUserById(userId)
-	if err != nil {
-		utils.ResolveError(err)
-	}
-	for i := 0; i < len; i++ {
-		video, err := dao.GetVideoById(favList[i])
-		if err != nil {
-			return nil, err
-		}
-
-		videos[i] = handlers.Video{
-			ID:            video.ID,
-			User:          user,
-			PlayURL:       video.PlayURL,
-			CoverURL:      video.CoverURL,
-			FavoriteCount: video.FavoriteCount,
-			CommentCount:  video.CommentCount,
-			Title:         video.Title,
-		}
 	}
 	return videos, nil
 }

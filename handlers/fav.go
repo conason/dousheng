@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"dousheng/dao"
 	"dousheng/service/serviceImpl"
 	"dousheng/utils"
 	"github.com/gin-gonic/gin"
@@ -83,7 +84,7 @@ func FavList(ctx *gin.Context) {
 		})
 	}
 	//call video模块 resp-> []video
-	videos, err := serviceImpl.GetFavListVideo(userid, favList)
+	videos, err := getFavListVideo(userid, favList)
 	if err != nil {
 		ctx.JSON(http.StatusOK, DouyinFavoriteListResponse{
 			StatusCode: -1,
@@ -97,4 +98,30 @@ func FavList(ctx *gin.Context) {
 		StatusMsg:  "get faList success",
 		VideoList:  videos,
 	})
+}
+
+func getFavListVideo(userId int64, favList []int64) ([]Video, error) {
+	len := len(favList)
+	videos := make([]Video, len)
+	user, err := dao.GetUserById(userId)
+	if err != nil {
+		utils.ResolveError(err)
+	}
+	for i := 0; i < len; i++ {
+		video, err := dao.GetVideoById(favList[i])
+		if err != nil {
+			return nil, err
+		}
+
+		videos[i] = Video{
+			ID:            video.ID,
+			User:          user,
+			PlayURL:       video.PlayURL,
+			CoverURL:      video.CoverURL,
+			FavoriteCount: video.FavoriteCount,
+			CommentCount:  video.CommentCount,
+			Title:         video.Title,
+		}
+	}
+	return videos, nil
 }

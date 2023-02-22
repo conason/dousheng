@@ -13,20 +13,38 @@ func SubAction(userId, upId, actionType int64) error {
 		Isdeleted:   0,
 		CreateTime:  time.Now(),
 	}
-
+	var count = int64(1)
 	if actionType == 2 {
+		count = -1
 		relation.Isdeleted = 1
-		err := dao.RelationSave(relation)
-		if err != nil {
-			return err
-		}
-		return nil
+		//err := dao.RelationSave(relation)
+		//if err != nil {
+		//	return err
+		//}
+		//err = dao.AddSubCount(userId, -1)
+		//if err != nil {
+		//	return err
+		//}
+		//err = dao.AddFansCount(upId, -1)
+		//if err != nil {
+		//	return err
+		//}
+		//return nil
 	}
 
 	err := dao.RelationSave(relation)
 	if err != nil {
 		return err
 	}
+	err = dao.AddSubCount(userId, count)
+	if err != nil {
+		return err
+	}
+	err = dao.AddFansCount(upId, count)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 

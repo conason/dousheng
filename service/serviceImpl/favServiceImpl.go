@@ -13,17 +13,30 @@ func FavAction(userId int64, videoId int64, actionType int32) error {
 		IsDeleted:  0,
 		CreateTime: time.Now(),
 	}
+	var count = int64(1)
 	if actionType == 2 {
-		favorite = model.Favorite{
-			UserID:     userId,
-			VideoID:    videoId,
-			IsDeleted:  1,
-			CreateTime: time.Now(),
-		}
+		count = -1
+		favorite.IsDeleted = 1
+		//favorite = model.Favorite{
+		//	UserID:     userId,
+		//	VideoID:    videoId,
+		//	IsDeleted:  1,
+		//	CreateTime: time.Now(),
+		//}
 	}
+
+	//事务
 	//更新、插入fav表，以及更新video表
 	//fav表操作
 	err := dao.Fav(favorite)
+	if err != nil {
+		return err
+	}
+	err = dao.AddFavCount(userId, count)
+	if err != nil {
+		return err
+	}
+	err = dao.AddVideoFavCount(videoId, count)
 	if err != nil {
 		return err
 	}
