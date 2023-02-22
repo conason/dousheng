@@ -60,3 +60,19 @@ func GetNewestVideos() ([]model.Video, error) {
 
 	return videos, nil
 }
+
+func AddVideoFavCount(videoId, num int64) error {
+	_, err := dal.Video.Where(dal.Video.ID.Eq(videoId)).UpdateSimple(dal.Video.FavoriteCount.Add(int32(num)))
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func AddCommentCount(videoId, num int64) error {
+	_, err := dal.Video.Where(dal.Video.ID.Eq(videoId)).UpdateSimple(dal.Video.CommentCount.Add(int32(num)))
+	if err != nil {
+		return err
+	}
+	return nil
+}

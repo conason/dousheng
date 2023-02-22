@@ -10,6 +10,10 @@ func Comment(comment model.Comment) error {
 	if err != nil {
 		return err
 	}
+	err = dao.AddCommentCount(comment.VideoID, 1)
+	if err != nil {
+		return err
+	}
 	return err
 }
 

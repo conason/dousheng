@@ -3,6 +3,7 @@ package handlers
 import (
 	"dousheng/dao/model"
 	"dousheng/service/serviceImpl"
+	"dousheng/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -23,17 +24,8 @@ type DouyinMessageChatResponse struct {
 func Send(ctx *gin.Context) {
 	token := ctx.Query("token")
 	toUserIdStr := ctx.Query("to_user_id")
-	//没啥用的参数
 	//actionStr := ctx.Query("action_type")
 	content := ctx.Query("content")
-	userId, exists := ctx.Get("user_id")
-	if !exists {
-		ctx.JSON(http.StatusOK, DouyinMessageActionResponse{
-			StatusCode: -1,
-			StatusMsg:  "unknown user",
-		})
-		return
-	}
 
 	if token == "" {
 		ctx.JSON(http.StatusOK, DouyinMessageActionResponse{
@@ -42,7 +34,9 @@ func Send(ctx *gin.Context) {
 		})
 		return
 	}
-
+	//userId解析
+	userId := utils.ParseToken(token)
+	//接收方id解析
 	toUserId, err := strconv.ParseInt(toUserIdStr, 10, 64)
 	if err != nil {
 		ctx.JSON(http.StatusOK, DouyinMessageActionResponse{
@@ -51,7 +45,7 @@ func Send(ctx *gin.Context) {
 		})
 		return
 	}
-
+	//信息解析
 	if content == "" {
 		ctx.JSON(http.StatusOK, DouyinMessageActionResponse{
 			StatusCode: -1,
@@ -59,10 +53,9 @@ func Send(ctx *gin.Context) {
 		})
 		return
 	}
-
 	err = serviceImpl.SendMsg(model.Message{
 		ToUserID:   toUserId,
-		FromUserID: userId.(int64),
+		FromUserID: userId,
 		Content:    content,
 		CreateTime: ptime.Now(),
 	})

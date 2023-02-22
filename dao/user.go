@@ -82,3 +82,35 @@ func GetUserListByIds(ids []int64) ([]model.User, error) {
 	}
 	return user, nil
 }
+
+func AddWorkCount(userId, num int64) error {
+	_, err := dal.User.Where(dal.User.ID.Eq(userId)).UpdateSimple(dal.User.WorkCount.Add(int32(num)))
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func AddFavCount(userId, num int64) error {
+	_, err := dal.User.Where(dal.User.ID.Eq(userId)).UpdateSimple(dal.User.FavoriteCount.Add(int32(num)))
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func AddSubCount(userId, num int64) error {
+	_, err := dal.User.Where(dal.User.ID.Eq(userId)).UpdateSimple(dal.User.FollowCount.Add(int32(num)))
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func AddFansCount(userId, num int64) error {
+	_, err := dal.User.Where(dal.User.ID.Eq(userId)).UpdateSimple(dal.User.FollowerCount.Add(int32(num)))
+	if err != nil {
+		return err
+	}
+	return nil
+}

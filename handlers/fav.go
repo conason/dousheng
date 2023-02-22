@@ -21,17 +21,6 @@ type DouyinFavoriteListResponse struct {
 }
 
 func FavAction(ctx *gin.Context) {
-	//userId解析
-	//userIdStr := ctx.Query("user_id")
-	//userid, err := strconv.ParseInt(userIdStr, 10, 64)
-	//if err != nil {
-	//	ctx.JSON(http.StatusOK, DouyinFavoriteActionResponse{
-	//		StatusCode: -1,
-	//		StatusMsg:  "invalid userId",
-	//	})
-	//	return
-	//}
-
 	token := ctx.Query("token")
 	userId := utils.ParseToken(token)
 
@@ -95,17 +84,35 @@ func FavList(ctx *gin.Context) {
 		})
 	}
 	//call video模块 resp-> []video
+	videos, err := getFavListVideo(userid, favList)
+	if err != nil {
+		ctx.JSON(http.StatusOK, DouyinFavoriteListResponse{
+			StatusCode: -1,
+			StatusMsg:  "fav_list request failed",
+			VideoList:  nil,
+		})
+	}
+
+	ctx.JSON(http.StatusOK, DouyinFavoriteListResponse{
+		StatusCode: 0,
+		StatusMsg:  "get faList success",
+		VideoList:  videos,
+	})
+}
+
+func getFavListVideo(userId int64, favList []int64) ([]Video, error) {
 	len := len(favList)
 	videos := make([]Video, len)
-	user, err := dao.GetUserById(userid)
+	user, err := dao.GetUserById(userId)
 	if err != nil {
 		utils.ResolveError(err)
 	}
 	for i := 0; i < len; i++ {
 		video, err := dao.GetVideoById(favList[i])
 		if err != nil {
-			utils.ResolveError(err)
+			return nil, err
 		}
+
 		videos[i] = Video{
 			ID:            video.ID,
 			User:          user,
@@ -114,14 +121,7 @@ func FavList(ctx *gin.Context) {
 			FavoriteCount: video.FavoriteCount,
 			CommentCount:  video.CommentCount,
 			Title:         video.Title,
-			CreateDate:    video.CreateDate,
-			UpdateDate:    video.UpdateDate,
 		}
 	}
-
-	ctx.JSON(http.StatusOK, DouyinFavoriteListResponse{
-		StatusCode: 0,
-		StatusMsg:  "get faList success",
-		VideoList:  videos,
-	})
+	return videos, nil
 }
