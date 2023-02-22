@@ -1,14 +1,61 @@
 package serviceImpl
 
 import (
+	"bytes"
 	"dousheng/dao"
 	"dousheng/dao/model"
+	"dousheng/handlers"
 	"dousheng/utils"
+	"errors"
+	"fmt"
+	ffmpeg "github.com/u2takey/ffmpeg-go"
 	"io"
 	"io/ioutil"
 	"mime/multipart"
+	"os"
+	"strings"
 	"time"
 )
+
+// 视频上传
+func Upload(videoData *multipart.FileHeader, title string, userId int64) error {
+	//将*multipart.FileHeader类型转化为[]byte
+	parseVideo, err := ParseVideo(videoData)
+	if err != nil {
+		return err
+	}
+	//视频文件名
+	videoName := fmt.Sprintf("%s.mp4", title)
+	//封面文件名
+	coverName := strings.Replace(videoName, ".mp4", "cover.jpeg", 1)
+	//fmt.Printf("%s\n", title)
+	//视频上传
+	code := utils.PushVideo(videoName, parseVideo)
+	if code != 0 {
+		return errors.New("upload failed")
+	}
+	//获取视频地址
+	playURL := utils.GetVideo(videoName)
+	//截取封面
+	parseCover, err := ParseCover(playURL, 1)
+	if err != nil {
+		return err
+	}
+
+	//封面上传
+	succ := utils.PushCover(coverName, parseCover)
+	if succ != 0 {
+		return errors.New("upload failed")
+	}
+	//获取封面地址
+	coverURL := utils.GetCover(coverName)
+	//上传至数据库
+	err = PushVideoToMysql(userId, playURL, coverURL, title)
+	if err != nil {
+		return err
+	}
+	return nil
+}
 
 // ParseVideo 将*multipart.FileHeader类型转化为 []byte
 func ParseVideo(videoData *multipart.FileHeader) ([]byte, error) {
@@ -27,6 +74,20 @@ func ParseVideo(videoData *multipart.FileHeader) ([]byte, error) {
 
 	}
 	return data, nil
+}
+
+func ParseCover(videoURL string, frameNum int) ([]byte, error) {
+	// Returns specified frame as []byte
+	buf := bytes.NewBuffer(nil)
+	err := ffmpeg.Input(videoURL).
+		Filter("select", ffmpeg.Args{fmt.Sprintf("gte(n,%d)", frameNum)}).
+		Output("pipe:", ffmpeg.KwArgs{"vframes": 1, "format": "image2", "vcodec": "mjpeg"}).
+		WithOutput(buf, os.Stdout).Run()
+	if err != nil {
+		return nil, err
+	}
+	byte := buf.Bytes()
+	return byte, nil
 }
 
 func PushVideoToMysql(userId int64, playUrl, coverUrl, title string) error {
@@ -72,10 +133,36 @@ func GetVideosByUserId(userId int64) ([]model.Video, error) {
 	return videos, nil
 }
 
-func GetNewestVideos() ([]model.Video, int64, error) {
+func GetNewestVideos() ([]model.Video, error) {
 	videos, err := dao.GetNewestVideos()
 	if err != nil {
-		return nil, 0, err
+		return nil, err
 	}
-	return videos, int64(len(videos)), nil
+	return videos, nil
+}
+
+func GetFavListVideo(userId int64, favList []int64) ([]handlers.Video, error) {
+	len := len(favList)
+	videos := make([]handlers.Video, len)
+	user, err := dao.GetUserById(userId)
+	if err != nil {
+		utils.ResolveError(err)
+	}
+	for i := 0; i < len; i++ {
+		video, err := dao.GetVideoById(favList[i])
+		if err != nil {
+			return nil, err
+		}
+
+		videos[i] = handlers.Video{
+			ID:            video.ID,
+			User:          user,
+			PlayURL:       video.PlayURL,
+			CoverURL:      video.CoverURL,
+			FavoriteCount: video.FavoriteCount,
+			CommentCount:  video.CommentCount,
+			Title:         video.Title,
+		}
+	}
+	return videos, nil
 }

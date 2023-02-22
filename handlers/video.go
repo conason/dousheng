@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"dousheng/dao"
 	"dousheng/dao/model"
 	"dousheng/service/serviceImpl"
 	"dousheng/utils"
@@ -56,10 +55,11 @@ func Feed(c *gin.Context) {
 
 	timestamp, err := utils.GetTimestamp()
 	utils.ResolveError(err)
+	//fmt.Printf("time:%v\n", timestamp)
 
 	videoData, err := serviceImpl.GetVideo(timeNext)
 	if err != nil || len(videoData) == 0 {
-		videoData, err = dao.GetNewestVideos()
+		videoData, err := serviceImpl.GetNewestVideos()
 		if err != nil {
 			c.JSON(http.StatusOK, DouyinFeedResponse{
 				StatusCode: -1,
@@ -71,12 +71,12 @@ func Feed(c *gin.Context) {
 
 		videos, err := transformVideos(videoData)
 		utils.ResolveError(err)
-
+		fmt.Printf("nextTime:%v\n", videoData[0].UpdateDate.Unix())
 		c.JSON(http.StatusOK, DouyinFeedResponse{
 			StatusCode: -1,
 			StatusMsg:  "feed video",
 			VideoList:  videos,
-			NextTime:   videos[0].UpdateDate.Unix(),
+			NextTime:   videoData[0].UpdateDate.Unix(),
 		})
 		return
 	}
@@ -85,11 +85,12 @@ func Feed(c *gin.Context) {
 	utils.ResolveError(err)
 
 	//feed响应
+	fmt.Printf("nextTime:%v\n", videoData[0].UpdateDate.Unix())
 	c.JSON(http.StatusOK, DouyinFeedResponse{
 		StatusCode: 0,
 		StatusMsg:  "feed video",
 		VideoList:  videos,
-		NextTime:   videos[0].UpdateDate.Unix(),
+		NextTime:   videoData[0].UpdateDate.Unix(),
 	})
 
 }
@@ -112,37 +113,13 @@ func VideoPublish(c *gin.Context) {
 	}
 	//token解析
 	userId := utils.ParseToken(token)
-	//将*multipart.FileHeader类型转化为[]byte
-	parseVideo, err := serviceImpl.ParseVideo(videoData)
+
+	//upload video
+	err = serviceImpl.Upload(videoData, title, userId)
 	if err != nil {
 		c.JSON(http.StatusOK, DouyinPublishActionResponse{
 			StatusCode: -1,
-			StatusMsg:  "server is busy please try again",
-		})
-		return
-	}
-	//视频文件名
-	videoName := fmt.Sprintf("%s.mp4", title)
-	//封面文件名
-	//coverName := strings.Replace(videoName, ".mp4", ".jpeg", 1)
-	//fmt.Printf("%s\n", title)
-	//视频上传
-	code := utils.PushVideo(videoName, parseVideo)
-	if code != 0 {
-		c.JSON(http.StatusOK, DouyinPublishActionResponse{
-			StatusCode: -1,
-			StatusMsg:  "server is busy please try again",
-		})
-		return
-	}
-	//获取playURL
-	playURL := utils.GetVideo(videoName)
-	//上传至数据库
-	err = serviceImpl.PushVideoToMysql(userId, playURL, "", title)
-	if err != nil {
-		c.JSON(http.StatusOK, DouyinPublishActionResponse{
-			StatusCode: -1,
-			StatusMsg:  "server is busy please try again",
+			StatusMsg:  "video upload failed",
 		})
 		return
 	}
@@ -164,7 +141,11 @@ func PublishList(ctx *gin.Context) {
 			VideoList:  nil,
 		})
 	}
-	videos, err := dao.GetVideosByUserId(userId)
+
+	videos, err := serviceImpl.GetVideosByUserId(userId)
+	if err != nil {
+		return
+	}
 	if err != nil {
 		ctx.JSON(http.StatusOK, DouyinPublishListResponse{
 			StatusCode: -1,
@@ -174,7 +155,7 @@ func PublishList(ctx *gin.Context) {
 	}
 
 	len := len(videos)
-	user, err := dao.GetUserData(userId)
+	user, _ := serviceImpl.GetUserById(userId)
 	videoList := make([]Video, len)
 	for i := 0; i < int(len); i++ {
 		videoList[i] = Video{
@@ -199,7 +180,7 @@ func transformVideos(videoData []model.Video) ([]Video, error) {
 	video := make([]Video, count)
 	for i := 0; i < int(count); i++ {
 		userId := videoData[i].UserID
-		user, err := dao.GetUserData(userId)
+		user, err := serviceImpl.GetUserById(userId)
 		if err != nil {
 			utils.ResolveError(err)
 		}

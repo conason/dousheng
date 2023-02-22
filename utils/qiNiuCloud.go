@@ -66,3 +66,45 @@ func DeleteVideo() {
 		return
 	}
 }
+
+func PushCover(key string, data []byte) int32 {
+	putPolicy := storage.PutPolicy{
+		Scope: config.PictureBucket,
+	}
+	mac := qbox.NewMac(config.AccessKey, config.SecretKey)
+	upToken := putPolicy.UploadToken(mac)
+
+	cfg := storage.Config{}
+	// 空间对应的机房
+	cfg.Region = &storage.ZoneHuadongZheJiang2
+	// 是否使用https域名
+	cfg.UseHTTPS = true
+	// 上传是否使用CDN上传加速
+	cfg.UseCdnDomains = false
+
+	formUploader := storage.NewFormUploader(&cfg)
+	ret := storage.PutRet{}
+	putExtra := storage.PutExtra{
+		Params: map[string]string{
+			"x:name": "github logo",
+		},
+	}
+	dataLen := int64(len(data))
+	err := formUploader.Put(context.Background(), &ret, upToken, key, bytes.NewReader(data), dataLen, &putExtra)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(ret.Key, ret.Hash)
+	if ret.Hash != "" {
+		return SUCCESS
+	}
+	return FAIL
+}
+
+func GetCover(key string) string {
+	domain := config.Domain
+	mac := qbox.NewMac(config.AccessKey, config.SecretKey)
+	deadline := time.Now().Add(time.Second * 3600 * 24 * 365).Unix() //1年有效期
+	privateAccessURL := storage.MakePrivateURL(mac, domain, key, deadline)
+	return privateAccessURL
+}

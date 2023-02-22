@@ -18,9 +18,8 @@ func DateToTimestamp(timeStr string) (int64, error) {
 }
 
 func TimestampToDate(stamp int64) (time.Time, error) {
-	now := time.Now()
-	if stamp > now.Unix() {
-		return now, nil
+	if stamp > time.Now().Unix() {
+		stamp /= 1000
 	}
 	fmt.Println(stamp)
 	timeU := time.Unix(stamp, 0)

@@ -4,6 +4,7 @@ import (
 	"dousheng/dao/model"
 	"dousheng/service/serviceImpl"
 	"dousheng/utils"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -200,7 +201,7 @@ func FriendList(ctx *gin.Context) {
 		})
 		return
 	}
-
+	fmt.Println(fansList)
 	ctx.JSON(http.StatusOK, DouyinRelationFollowerListResponse{
 		StatusCode: 0,
 		StatusMsg:  "get friendList successfully",
