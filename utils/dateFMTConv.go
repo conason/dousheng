@@ -21,11 +21,16 @@ func TimestampToDate(stamp int64) (time.Time, error) {
 	if stamp > time.Now().Unix() {
 		stamp /= 1000
 	}
-	fmt.Println(stamp)
+	//fmt.Println(stamp)
 	timeU := time.Unix(stamp, 0)
 	dateStr := timeU.Format(templateTime)
-	fmt.Println(dateStr)
-	date, err := time.Parse(templateTime, dateStr)
+	location, err := time.LoadLocation(loc)
+	if err != nil {
+		return time.Time{}, err
+	}
+	date, err := time.ParseInLocation("2006-01-02 15:04:05", dateStr, location)
+	//fmt.Println(dateStr)
+	//date, err := time.Parse(templateTime, dateStr)
 	if err != nil {
 		return time.Time{}, err
 	}

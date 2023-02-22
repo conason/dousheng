@@ -17,7 +17,7 @@ func MessageSave(message model.Message) error {
 func GetMessageToUser(userId, toUserId int64, preTime time.Time) ([]model.Message, error) {
 	var msg []model.Message
 	err := dal.Message.Where(dal.Message.ToUserID.Eq(userId), dal.Message.FromUserID.Eq(toUserId), dal.Message.CreateTime.Gt(preTime)).
-		Order(dal.Message.CreateTime.Desc()).
+		Order(dal.Message.CreateTime).
 		Scan(&msg)
 	if err != nil {
 		return nil, err
@@ -29,7 +29,8 @@ func GetMessageToUser(userId, toUserId int64, preTime time.Time) ([]model.Messag
 func GetAllMsgToUser(userId, toUserId int64) ([]model.Message, error) {
 	var msg []model.Message
 	err := dal.Message.Where(dal.Message.ToUserID.Eq(userId), dal.Message.FromUserID.Eq(toUserId)).
-		Order(dal.Message.CreateTime.Desc()).
+		Or(dal.Message.ToUserID.Eq(toUserId), dal.Message.FromUserID.Eq(userId)).
+		Order(dal.Message.CreateTime).
 		Scan(&msg)
 	if err != nil {
 		return nil, err
