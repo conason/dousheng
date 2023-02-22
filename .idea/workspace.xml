@@ -4,30 +4,8 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="10b93ea2-0b3e-4a53-825a-6caa710396b6" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/service/serviceImpl/userServiceImpl.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/service/serviceImpl/videoServiceImpl.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/service/userService.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/service/videoService.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/utils/ffmpeg.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_2023_2_18_10_25__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_2023_2_18_10_25__Changes_.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_2023_2_18_10_25__Changes_1.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_2023_2_18_10_25__Changes_1.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_2023_2_19_10_18__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_2023_2_19_10_18__Changes_.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_2023_2_21_19_42__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_2023_2_21_19_42__Changes_.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_2023_2_21_19_42__Changes_1.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_2023_2_21_19_42__Changes_1.xml" afterDir="false" />
+    <list default="true" id="10b93ea2-0b3e-4a53-825a-6caa710396b6" name="Changes" comment="cover upload-unTest">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dao/comment.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/comment.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dao/fav.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/fav.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dao/relation.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/relation.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dao/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/user.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dao/video.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/video.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/handlers/fav.go" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/fav.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/handlers/message.go" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/message.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/handlers/relation.go" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/relation.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/handlers/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/user.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/handlers/video.go" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/video.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/serviceImpl/favServiceImpl.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/serviceImpl/favServiceImpl.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/dateFMTConv.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dateFMTConv.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,7 +27,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="main" />
+        <entry key="$PROJECT_DIR$" value="conason-gin" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -203,7 +181,8 @@
     <MESSAGE value="基本功能全部完成,待测试调整" />
     <MESSAGE value="videoPublishTest" />
     <MESSAGE value="basicComplete" />
-    <option name="LAST_COMMIT_MESSAGE" value="basicComplete" />
+    <MESSAGE value="cover upload-unTest" />
+    <option name="LAST_COMMIT_MESSAGE" value="cover upload-unTest" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
