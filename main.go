@@ -2,7 +2,9 @@ package main
 
 import (
 	"dousheng/dao"
+	"dousheng/handlers"
 	"dousheng/utils"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -80,6 +82,31 @@ func main() {
 	dao.Init()
 
 	utils.FilterInit()
+
+	utils.RedisInit()
+
+	err := CacheWarming()
+	if err != nil {
+		log.Panicln(err)
+		return
+	}
 	// Listen and Server in 0.0.0.0:8080
 	r.Run(":8080")
+}
+
+// CacheWarming 缓存预热
+func CacheWarming() error {
+	//defer utils.Redis.Close()
+
+	videos, err := dao.GetAllVideos()
+	if err != nil {
+		return err
+	}
+
+	err = handlers.TransVideos(videos)
+	if err != nil {
+		return err
+	}
+	return nil
+
 }

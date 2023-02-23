@@ -30,8 +30,14 @@ var (
 
 //n:a CRUD process can get n video
 
-const N = 5
+const N = 30
 
 const DICT = "./config/sensitive_words_lines.txt"
 
 const TEMPTIME = "2006-01-02 15:04:05"
+
+const REDISADDR = "127.0.0.1:6379"
+
+const REDISDB = 0
+
+const VIDEOSKEY = "videos"

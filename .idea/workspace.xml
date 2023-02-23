@@ -5,18 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="10b93ea2-0b3e-4a53-825a-6caa710396b6" name="Changes" comment="fix video publish">
-      <change afterPath="$PROJECT_DIR$/utils/redis.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/utils/wordsFilter.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/config/config.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dao/comment.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/comment.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dao/init.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/init.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dao/video.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/video.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/handlers/comment.go" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/comment.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/handlers/message.go" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/message.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/handlers/video.go" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/video.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/serviceImpl/videoServiceImpl.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/serviceImpl/videoServiceImpl.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/ffmpeg.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/ffmpeg.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/redis.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/redis.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,7 +30,7 @@
   </component>
   <component name="GOROOT" url="file://$PROJECT_DIR$/../../../Program Files/Go" />
   <component name="Git.Merge.Settings">
-    <option name="BRANCH" value="conason-gin" />
+    <option name="BRANCH" value="conason-wordfilter" />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
@@ -196,7 +193,8 @@
     <MESSAGE value="Merge branch 'conason-gin'&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml" />
     <MESSAGE value="fix chat_msg sequence bug" />
     <MESSAGE value="change gitignore" />
-    <option name="LAST_COMMIT_MESSAGE" value="change gitignore" />
+    <MESSAGE value="words filter" />
+    <option name="LAST_COMMIT_MESSAGE" value="words filter" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>

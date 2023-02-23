@@ -1,11 +1,15 @@
 package handlers
 
 import (
+	"dousheng/config"
 	"dousheng/dao"
 	"dousheng/dao/model"
 	"dousheng/service/serviceImpl"
 	"dousheng/utils"
+	"encoding/json"
+	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/go-redis/redis/v8"
 	"net/http"
 	"strconv"
 )
@@ -50,49 +54,90 @@ func Feed(c *gin.Context) {
 	if err != nil {
 		utils.ResolveError(err)
 	}
+	//log.Println("timeInt:%V\n", timeInt)
 
 	// 时间戳转日期
-	timeNext, err := utils.TimestampToDate(timeInt)
-	utils.ResolveError(err)
+	//timeNext, err := utils.TimestampToDate(timeInt)
+	//utils.ResolveError(err)
 
 	timestamp, err := utils.GetTimestamp()
 	utils.ResolveError(err)
-	//fmt.Printf("time:%v\n", timestamp)
+	//log.Println("timestamp:%V\n", timestamp)
 
-	videoData, err := serviceImpl.GetVideo(timeNext)
-	if err != nil || len(videoData) == 0 {
-		videoData, err := serviceImpl.GetNewestVideos()
+	if timeInt > timestamp {
+		timeInt /= 1000
+	}
+
+	redisVideos, err := utils.Redis.ZRevRange(utils.Ctx, config.VIDEOSKEY, timeInt, timestamp).Result()
+	if err != nil {
+		//log.Println(err)
+		c.JSON(http.StatusOK, DouyinFeedResponse{
+			StatusCode: -1,
+			StatusMsg:  "server is busy please try again",
+			VideoList:  nil,
+			NextTime:   timestamp,
+		})
+		return
+	}
+	// redis 返回为空
+	if len(redisVideos) <= 0 {
+		//fmt.Println("yse")
+		c.JSON(http.StatusOK, DouyinFeedResponse{
+			StatusCode: -1,
+			StatusMsg:  "no more videos",
+			VideoList:  nil,
+			NextTime:   0,
+		})
+		return
+	}
+	// 返回视频最早时间戳
+	score, err := utils.Redis.ZScore(utils.Ctx, config.VIDEOSKEY, redisVideos[0]).Result()
+	if err != nil {
+		utils.ResolveError(err)
+	}
+	nextTime := int64(score)
+	fmt.Println(redisVideos)
+
+	// 限制返回 video 数量
+	var len = len(redisVideos)
+	if len > config.N {
+		len = config.N
+	}
+	videoData := make([]Video, len)
+	for i, video := range redisVideos {
+		err = json.Unmarshal([]byte(video), &videoData[i])
 		if err != nil {
 			c.JSON(http.StatusOK, DouyinFeedResponse{
 				StatusCode: -1,
-				StatusMsg:  "server is busy please try again",
+				StatusMsg:  "feed video failed",
 				VideoList:  nil,
 				NextTime:   timestamp,
 			})
+			return
 		}
+	}
 
-		videos, err := transformVideos(videoData, userId)
-		utils.ResolveError(err)
-		//fmt.Printf("nextTime:%v\n", videoData[0].UpdateDate.Unix())
+	// 用户未登录
+	if userId <= 0 {
 		c.JSON(http.StatusOK, DouyinFeedResponse{
 			StatusCode: -1,
-			StatusMsg:  "feed video",
-			VideoList:  videos,
-			NextTime:   videoData[0].UpdateDate.Unix(),
+			StatusMsg:  "feed video failed",
+			VideoList:  videoData,
+			NextTime:   nextTime,
 		})
 		return
 	}
 
-	videos, err := transformVideos(videoData, userId)
+	// 用户登录判断是否点赞\订阅
+	videos, err := IfLoginTransVideos(videoData, userId)
 	utils.ResolveError(err)
 
 	// feed响应
-	//fmt.Printf("nextTime:%v\n", videoData[0].UpdateDate.Unix())
 	c.JSON(http.StatusOK, DouyinFeedResponse{
 		StatusCode: 0,
-		StatusMsg:  "feed video",
+		StatusMsg:  "feed success",
 		VideoList:  videos,
-		NextTime:   videoData[0].UpdateDate.Unix(),
+		NextTime:   nextTime,
 	})
 
 }
@@ -122,6 +167,15 @@ func VideoPublish(c *gin.Context) {
 		c.JSON(http.StatusOK, DouyinPublishActionResponse{
 			StatusCode: -1,
 			StatusMsg:  "video upload failed",
+		})
+		return
+	}
+	//upload success add to cache
+	err = addCache(userId)
+	if err != nil {
+		c.JSON(http.StatusOK, DouyinPublishActionResponse{
+			StatusCode: -1,
+			StatusMsg:  "upload cache failed",
 		})
 		return
 	}
@@ -159,7 +213,7 @@ func PublishList(ctx *gin.Context) {
 	len := len(videos)
 	//user, _ := serviceImpl.GetUserById(userId)
 	videoList := make([]Video, len)
-	for i := 0; i < int(len); i++ {
+	for i := 0; i < len; i++ {
 		videoList[i] = Video{
 			ID: videos[i].ID,
 			//User:          user,
@@ -177,23 +231,34 @@ func PublishList(ctx *gin.Context) {
 	})
 }
 
-func transformVideos(videoData []model.Video, userId int64) ([]Video, error) {
-	count := len(videoData)
-	video := make([]Video, count)
-	for i := 0; i < int(count); i++ {
-		videoUserId := videoData[i].UserID
-		userData, err := serviceImpl.GetUserById(videoUserId)
-		if err != nil {
-			utils.ResolveError(err)
-		}
+func IfLoginTransVideos(videoData []Video, userId int64) ([]Video, error) {
+	for i := 0; i < len(videoData); i++ {
 		//是否点赞
 		isFav, err := dao.IsFav(userId, videoData[i].ID)
 		if err != nil {
 			utils.ResolveError(err)
 		}
-		isSub, err := dao.IsSub(userId, videoUserId)
+		videoData[i].IsFavorite = isFav
+		//是否订阅
+		isSub, err := dao.IsSub(userId, videoData[i].User.ID)
 		if err != nil {
 			return nil, err
+		}
+		videoData[i].User.IsFowllow = isSub
+	}
+	return videoData, nil
+}
+
+func TransVideos(videoData []model.Video) error {
+	count := len(videoData)
+	//video := make([]handlers.Video, count)
+	//zset := make([]redis.Z, count)
+	for i := 0; i < int(count); i++ {
+		//完善视频作者信息
+		videoUserId := videoData[i].UserID
+		userData, err := serviceImpl.GetUserById(videoUserId)
+		if err != nil {
+			utils.ResolveError(err)
 		}
 		user := User{
 			ID:              userData.ID,
@@ -205,18 +270,74 @@ func transformVideos(videoData []model.Video, userId int64) ([]Video, error) {
 			TotalFavorited:  userData.TotalFavorited,
 			WorkCount:       userData.WorkCount,
 			FavoriteCount:   userData.FavoriteCount,
-			IsFowllow:       isSub,
 		}
-		video[i] = Video{
+		video := Video{
 			ID:            videoData[i].ID,
 			User:          user,
 			PlayURL:       videoData[i].PlayURL,
 			CoverURL:      videoData[i].CoverURL,
 			FavoriteCount: videoData[i].FavoriteCount,
 			CommentCount:  videoData[i].CommentCount,
-			IsFavorite:    isFav,
 			Title:         videoData[i].Title,
 		}
+		// JSON
+		videoJSON, err := json.Marshal(&video)
+		if err != nil {
+			return err
+		}
+		// 视频时间戳
+		createTime := videoData[i].CreateDate.Unix()
+		arg := redis.Z{
+			Score:  float64(createTime),
+			Member: videoJSON,
+		}
+		utils.Redis.ZAdd(utils.Ctx, config.VIDEOSKEY, &arg)
 	}
-	return video, nil
+
+	return nil
+
+}
+
+func addCache(userId int64) error {
+	daoVideo, err := dao.GetVideoByUserId(userId)
+	if err != nil {
+		return err
+	}
+	daoUser, err := dao.GetUserById(userId)
+	if err != nil {
+		return err
+	}
+
+	video := Video{
+		ID: daoVideo.ID,
+		User: User{
+			ID:              daoUser.ID,
+			Name:            daoUser.Name,
+			FollowCount:     daoUser.FollowCount,
+			FollowerCount:   daoUser.FollowerCount,
+			BackgroundImage: daoUser.BackgroundImage,
+			Signature:       daoUser.Signature,
+			TotalFavorited:  daoUser.TotalFavorited,
+			WorkCount:       daoUser.WorkCount,
+			FavoriteCount:   daoUser.FavoriteCount,
+		},
+		PlayURL:       daoVideo.PlayURL,
+		CoverURL:      daoVideo.CoverURL,
+		FavoriteCount: daoVideo.FavoriteCount,
+		CommentCount:  daoVideo.CommentCount,
+		Title:         daoVideo.Title,
+	}
+	//解析为JSON
+	videoJSON, err := json.Marshal(video)
+	if err != nil {
+		return err
+	}
+	score := float64(daoVideo.CreateDate.Unix())
+	z := redis.Z{
+		Score:  score,
+		Member: videoJSON,
+	}
+	//加入redis
+	utils.Redis.ZAdd(utils.Ctx, config.VIDEOSKEY, &z)
+	return nil
 }

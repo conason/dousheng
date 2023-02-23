@@ -76,3 +76,24 @@ func AddCommentCount(videoId, num int64) error {
 	}
 	return nil
 }
+
+func GetAllVideos() ([]model.Video, error) {
+	var videos []model.Video
+	err := dal.Video.Limit(config.N).Scan(&videos)
+	if err != nil {
+		return nil, err
+	}
+	return videos, nil
+}
+
+func GetVideoByUserId(userId int64) (model.Video, error) {
+	var video model.Video
+	err := dal.Video.Where(dal.Video.UserID.Eq(userId)).
+		Order(dal.Video.CreateDate.Desc()).
+		Limit(1).
+		Scan(&video)
+	if err != nil {
+		return model.Video{}, err
+	}
+	return video, nil
+}

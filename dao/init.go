@@ -4,7 +4,6 @@ import (
 	"dousheng/dao/dal"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
 	"time"
 )
@@ -18,7 +17,7 @@ const dsn = "root:511518nibubda%@tcp(175.178.26.250:3307)/dousheng_db?charset=ut
 func Init() {
 	var err error
 	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Info),
+		//Logger: logger.Default.LogMode(logger.Info),
 		NamingStrategy: schema.NamingStrategy{
 			TablePrefix:   "tb_", // 表名前缀，`love`表为`t_love`
 			SingularTable: true,  // 使用单数表名，启用该选项后，`love` 表将是`love`
