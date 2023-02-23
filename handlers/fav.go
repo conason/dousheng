@@ -103,9 +103,20 @@ func FavList(ctx *gin.Context) {
 func getFavListVideo(userId int64, favList []int64) ([]Video, error) {
 	len := len(favList)
 	videos := make([]Video, len)
-	user, err := dao.GetUserById(userId)
+	userData, err := dao.GetUserById(userId)
 	if err != nil {
 		utils.ResolveError(err)
+	}
+	user := User{
+		ID:              userData.ID,
+		Name:            userData.Name,
+		FollowCount:     userData.FollowCount,
+		FollowerCount:   userData.FollowerCount,
+		BackgroundImage: userData.BackgroundImage,
+		Signature:       userData.Signature,
+		TotalFavorited:  userData.TotalFavorited,
+		WorkCount:       userData.WorkCount,
+		FavoriteCount:   userData.FavoriteCount,
 	}
 	for i := 0; i < len; i++ {
 		video, err := dao.GetVideoById(favList[i])

@@ -1,26 +1,24 @@
 package handlers
 
 import (
+	"dousheng/dao"
 	"dousheng/dao/model"
 	"dousheng/service/serviceImpl"
 	"dousheng/utils"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
-	"time"
 )
 
 type Video struct {
-	ID            int64      `gorm:"column:video_id;primaryKey;autoIncrement:true" json:"id"`                  // 视频id
-	User          model.User `gorm:"column:user_id" json:"author"`                                             // 视频作者
-	PlayURL       string     `gorm:"column:play_url" json:"play_url"`                                          // 视频URL
-	CoverURL      string     `gorm:"column:cover_url" json:"cover_url"`                                        // 封面URL
-	FavoriteCount int32      `gorm:"column:favorite_count" json:"favorite_count"`                              // 点赞总数
-	CommentCount  int32      `gorm:"column:comment_count" json:"comment_count"`                                // 评论总数
-	Title         string     `gorm:"column:title" json:"title"`                                                // 视频标题
-	CreateDate    time.Time  `gorm:"column:create_date;not null;default:CURRENT_TIMESTAMP" json:"create_date"` // 创建时间
-	UpdateDate    time.Time  `gorm:"column:update_date;not null;default:CURRENT_TIMESTAMP" json:"update_date"` // 更新时间
+	ID            int64  `json:"id"`             // 视频id
+	User          User   `json:"author"`         // 视频作者
+	PlayURL       string `json:"play_url"`       // 视频URL
+	CoverURL      string `json:"cover_url"`      // 封面URL
+	FavoriteCount int32  `json:"favorite_count"` // 点赞总数
+	CommentCount  int32  `json:"comment_count"`  // 评论总数
+	IsFavorite    bool   `json:"is_favorite"`    // 是否点赞
+	Title         string `json:"title"`          // 视频标题
 }
 
 type DouyinFeedResponse struct {
@@ -42,14 +40,18 @@ type DouyinPublishListResponse struct {
 }
 
 func Feed(c *gin.Context) {
-
+	token := c.Query("token")
+	userId := int64(0)
+	if token != "" {
+		userId = utils.ParseToken(token)
+	}
 	latestTime := c.Query("latest_time")
 	timeInt, err := strconv.ParseInt(latestTime, 10, 64)
 	if err != nil {
 		utils.ResolveError(err)
 	}
 
-	//时间戳转日期
+	// 时间戳转日期
 	timeNext, err := utils.TimestampToDate(timeInt)
 	utils.ResolveError(err)
 
@@ -69,9 +71,9 @@ func Feed(c *gin.Context) {
 			})
 		}
 
-		videos, err := transformVideos(videoData)
+		videos, err := transformVideos(videoData, userId)
 		utils.ResolveError(err)
-		fmt.Printf("nextTime:%v\n", videoData[0].UpdateDate.Unix())
+		//fmt.Printf("nextTime:%v\n", videoData[0].UpdateDate.Unix())
 		c.JSON(http.StatusOK, DouyinFeedResponse{
 			StatusCode: -1,
 			StatusMsg:  "feed video",
@@ -81,11 +83,11 @@ func Feed(c *gin.Context) {
 		return
 	}
 
-	videos, err := transformVideos(videoData)
+	videos, err := transformVideos(videoData, userId)
 	utils.ResolveError(err)
 
-	//feed响应
-	fmt.Printf("nextTime:%v\n", videoData[0].UpdateDate.Unix())
+	// feed响应
+	//fmt.Printf("nextTime:%v\n", videoData[0].UpdateDate.Unix())
 	c.JSON(http.StatusOK, DouyinFeedResponse{
 		StatusCode: 0,
 		StatusMsg:  "feed video",
@@ -155,12 +157,12 @@ func PublishList(ctx *gin.Context) {
 	}
 
 	len := len(videos)
-	user, _ := serviceImpl.GetUserById(userId)
+	//user, _ := serviceImpl.GetUserById(userId)
 	videoList := make([]Video, len)
 	for i := 0; i < int(len); i++ {
 		videoList[i] = Video{
-			ID:            videos[i].ID,
-			User:          user,
+			ID: videos[i].ID,
+			//User:          user,
 			PlayURL:       videos[i].PlayURL,
 			CoverURL:      videos[i].CoverURL,
 			FavoriteCount: videos[i].FavoriteCount,
@@ -175,14 +177,35 @@ func PublishList(ctx *gin.Context) {
 	})
 }
 
-func transformVideos(videoData []model.Video) ([]Video, error) {
+func transformVideos(videoData []model.Video, userId int64) ([]Video, error) {
 	count := len(videoData)
 	video := make([]Video, count)
 	for i := 0; i < int(count); i++ {
-		userId := videoData[i].UserID
-		user, err := serviceImpl.GetUserById(userId)
+		videoUserId := videoData[i].UserID
+		userData, err := serviceImpl.GetUserById(videoUserId)
 		if err != nil {
 			utils.ResolveError(err)
+		}
+		//是否点赞
+		isFav, err := dao.IsFav(userId, videoData[i].ID)
+		if err != nil {
+			utils.ResolveError(err)
+		}
+		isSub, err := dao.IsSub(userId, videoUserId)
+		if err != nil {
+			return nil, err
+		}
+		user := User{
+			ID:              userData.ID,
+			Name:            userData.Name,
+			FollowCount:     userData.FollowCount,
+			FollowerCount:   userData.FollowerCount,
+			BackgroundImage: userData.BackgroundImage,
+			Signature:       userData.Signature,
+			TotalFavorited:  userData.TotalFavorited,
+			WorkCount:       userData.WorkCount,
+			FavoriteCount:   userData.FavoriteCount,
+			IsFowllow:       isSub,
 		}
 		video[i] = Video{
 			ID:            videoData[i].ID,
@@ -191,6 +214,7 @@ func transformVideos(videoData []model.Video) ([]Video, error) {
 			CoverURL:      videoData[i].CoverURL,
 			FavoriteCount: videoData[i].FavoriteCount,
 			CommentCount:  videoData[i].CommentCount,
+			IsFavorite:    isFav,
 			Title:         videoData[i].Title,
 		}
 	}

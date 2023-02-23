@@ -37,3 +37,16 @@ func FavList(userId int64) ([]int64, error) {
 
 	return userIds, err
 }
+
+func IsFav(userId, videoId int64) (bool, error) {
+	count, err := dal.Favorite.Where(dal.Favorite.UserID.Eq(userId), dal.Favorite.VideoID.Eq(videoId), dal.Favorite.IsDeleted.Eq(0)).Count()
+	if err != nil {
+		return false, err
+	}
+
+	if count <= 0 {
+		return false, nil
+	}
+
+	return true, nil
+}
