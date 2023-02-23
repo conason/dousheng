@@ -61,6 +61,9 @@ func Send(ctx *gin.Context) {
 		})
 		return
 	}
+	//敏感词过滤
+	utils.Filter.Replace(content, '*')
+
 	err = serviceImpl.SendMsg(model.Message{
 		ToUserID:   toUserId,
 		FromUserID: userId,
@@ -127,6 +130,7 @@ func Receive(ctx *gin.Context) {
 		})
 		return
 	}
+
 	var messages []Message
 	if msg != nil {
 		messages = transMsg(msg)
@@ -149,7 +153,6 @@ func transMsg(msg []model.Message) []Message {
 			Content:    msg[i].Content,
 			CreateTime: msg[i].CreateTime.Unix(),
 		}
-		//fmt.Printf("msgTime:%v\n", msg[i].CreateTime.Unix())
 	}
 	return messages
 }

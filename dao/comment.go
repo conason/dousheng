@@ -15,7 +15,7 @@ func SaveComment(comment model.Comment) error {
 
 func GetCommentByUserId(userId int64) ([]model.Comment, error) {
 	var comments []model.Comment
-	err := dal.Comment.Where(dal.Comment.UserID.Eq(userId), dal.Comment.IsDeleted.Eq(0)).
+	err := dal.Comment.Where(dal.Comment.UserID.Eq(userId), dal.Comment.IsDeleted.Eq(1)).
 		Order(dal.Comment.CreateTime.Desc()).
 		Scan(&comments)
 	if err != nil {
@@ -31,7 +31,7 @@ func GetCommentByUserId(userId int64) ([]model.Comment, error) {
 
 func GetCommentByVideoId(videoId int64) ([]model.Comment, error) {
 	var comments []model.Comment
-	err := dal.Comment.Where(dal.Comment.VideoID.Eq(videoId), dal.Comment.IsDeleted.Eq(0)).
+	err := dal.Comment.Where(dal.Comment.VideoID.Eq(videoId), dal.Comment.IsDeleted.Eq(1)).
 		Order(dal.Comment.CreateTime.Desc()).
 		Scan(&comments)
 	if err != nil {

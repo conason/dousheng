@@ -31,3 +31,7 @@ var (
 //n:a CRUD process can get n video
 
 const N = 5
+
+const DICT = "./config/sensitive_words_lines.txt"
+
+const TEMPTIME = "2006-01-02 15:04:05"

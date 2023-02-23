@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"dousheng/config"
 	"dousheng/dao"
 	"dousheng/dao/model"
 	"dousheng/service/serviceImpl"
@@ -15,7 +16,7 @@ type Comment struct {
 	Id         int64      `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`                                  // 视频评论id
 	User       model.User `protobuf:"bytes,2,opt,name=user,proto3" json:"user,omitempty"`                               // 评论用户信息
 	Content    string     `protobuf:"bytes,3,opt,name=content,proto3" json:"content,omitempty"`                         // 评论内容
-	CreateDate int64      `protobuf:"bytes,4,opt,name=create_date,json=createDate,proto3" json:"create_date,omitempty"` // 评论发布日期，格式 mm-dd
+	CreateDate string     `protobuf:"bytes,4,opt,name=create_date,json=createDate,proto3" json:"create_date,omitempty"` // 评论发布日期，格式 mm-dd
 }
 
 type DouyinCommentActionResponse struct {
@@ -31,25 +32,6 @@ type DouyinCommentListResponse struct {
 }
 
 func CommentAction(ctx *gin.Context) {
-	//userId, exists := ctx.Get("userId")
-	//if !exists {
-	//	ctx.JSON(http.StatusOK, DouyinCommentActionResponse{
-	//		StatusCode: -1,
-	//		StatusMsg:  "user not logged in",
-	//		Comment:    Comment{},
-	//	})
-	//	return
-	//}
-	//userid, err := strconv.ParseInt(userId.(string), 10, 64)
-	//if err != nil {
-	//	ctx.JSON(http.StatusOK, DouyinCommentActionResponse{
-	//		StatusCode: -1,
-	//		StatusMsg:  "invalid userId",
-	//		Comment:    Comment{},
-	//	})
-	//	return
-	//}
-
 	//token解析
 	token := ctx.Query("token")
 	userId := utils.ParseToken(token)
@@ -76,6 +58,8 @@ func CommentAction(ctx *gin.Context) {
 		})
 		return
 	}
+	//敏感词过滤
+	text = utils.Filter.Replace(text, '*')
 
 	//actionType解析
 	act := ctx.Query("action_type")
@@ -120,7 +104,7 @@ func CommentAction(ctx *gin.Context) {
 	c := Comment{
 		User:       user,
 		Content:    text,
-		CreateDate: comment.CreateTime.Unix(),
+		CreateDate: comment.CreateTime.Format(config.TEMPTIME),
 	}
 
 	ctx.JSON(http.StatusOK, DouyinCommentActionResponse{
@@ -130,62 +114,63 @@ func CommentAction(ctx *gin.Context) {
 	})
 }
 
-func UserCommentList(ctx *gin.Context) {
-	userId, exists := ctx.Get("userId")
-	if !exists {
-		ctx.JSON(http.StatusOK, DouyinCommentListResponse{
-			StatusCode:  -1,
-			StatusMsg:   "user not logged in",
-			CommentList: []Comment{},
-		})
-		return
-	}
-	userid, err := strconv.ParseInt(userId.(string), 10, 64)
-	if err != nil {
-		ctx.JSON(http.StatusOK, DouyinCommentListResponse{
-			StatusCode:  -1,
-			StatusMsg:   "invalid userId",
-			CommentList: []Comment{},
-		})
-		return
-	}
-
-	userCommentList, err := serviceImpl.GetUserCommentList(userid)
-	if err != nil {
-		ctx.JSON(http.StatusOK, DouyinCommentListResponse{
-			StatusCode:  -1,
-			StatusMsg:   err.Error(),
-			CommentList: []Comment{},
-		})
-		return
-	}
-
-	user, err := dao.GetUserById(userid)
-	if err != nil {
-		ctx.JSON(http.StatusOK, DouyinCommentListResponse{
-			StatusCode:  -1,
-			StatusMsg:   err.Error(),
-			CommentList: []Comment{},
-		})
-		return
-	}
-
-	len := len(userCommentList)
-	var comments = make([]Comment, len)
-	for i := 0; i < len; i++ {
-		comments[i] = Comment{
-			Id:         userCommentList[i].ID,
-			User:       user,
-			Content:    userCommentList[i].Content,
-			CreateDate: userCommentList[i].CreateTime.Unix(),
-		}
-	}
-	ctx.JSON(http.StatusOK, DouyinCommentListResponse{
-		StatusCode:  0,
-		StatusMsg:   "get user_comment_list success",
-		CommentList: comments,
-	})
-}
+//
+//func UserCommentList(ctx *gin.Context) {
+//	userId, exists := ctx.Get("userId")
+//	if !exists {
+//		ctx.JSON(http.StatusOK, DouyinCommentListResponse{
+//			StatusCode:  -1,
+//			StatusMsg:   "user not logged in",
+//			CommentList: []Comment{},
+//		})
+//		return
+//	}
+//	userid, err := strconv.ParseInt(userId.(string), 10, 64)
+//	if err != nil {
+//		ctx.JSON(http.StatusOK, DouyinCommentListResponse{
+//			StatusCode:  -1,
+//			StatusMsg:   "invalid userId",
+//			CommentList: []Comment{},
+//		})
+//		return
+//	}
+//
+//	userCommentList, err := serviceImpl.GetUserCommentList(userid)
+//	if err != nil {
+//		ctx.JSON(http.StatusOK, DouyinCommentListResponse{
+//			StatusCode:  -1,
+//			StatusMsg:   err.Error(),
+//			CommentList: []Comment{},
+//		})
+//		return
+//	}
+//
+//	user, err := dao.GetUserById(userid)
+//	if err != nil {
+//		ctx.JSON(http.StatusOK, DouyinCommentListResponse{
+//			StatusCode:  -1,
+//			StatusMsg:   err.Error(),
+//			CommentList: []Comment{},
+//		})
+//		return
+//	}
+//
+//	len := len(userCommentList)
+//	var comments = make([]Comment, len)
+//	for i := 0; i < len; i++ {
+//		comments[i] = Comment{
+//			Id:         userCommentList[i].ID,
+//			User:       user,
+//			Content:    userCommentList[i].Content,
+//			CreateDate: userCommentList[i].CreateTime.Unix(),
+//		}
+//	}
+//	ctx.JSON(http.StatusOK, DouyinCommentListResponse{
+//		StatusCode:  0,
+//		StatusMsg:   "get user_comment_list success",
+//		CommentList: comments,
+//	})
+//}
 
 func VideoCommentList(ctx *gin.Context) {
 	//videoId解析
@@ -225,7 +210,7 @@ func VideoCommentList(ctx *gin.Context) {
 			Id:         commentList[i].ID,
 			User:       user,
 			Content:    commentList[i].Content,
-			CreateDate: commentList[i].CreateTime.Unix(),
+			CreateDate: commentList[i].CreateTime.Format(config.TEMPTIME),
 		}
 	}
 

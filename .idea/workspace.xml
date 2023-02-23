@@ -4,9 +4,19 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="10b93ea2-0b3e-4a53-825a-6caa710396b6" name="Changes" comment="change gitignore">
+    <list default="true" id="10b93ea2-0b3e-4a53-825a-6caa710396b6" name="Changes" comment="fix video publish">
+      <change afterPath="$PROJECT_DIR$/utils/redis.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/utils/wordsFilter.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/config/config.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dao/comment.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/comment.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/handlers/comment.go" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/comment.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/handlers/message.go" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/message.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/service/serviceImpl/videoServiceImpl.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/serviceImpl/videoServiceImpl.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/ffmpeg.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/ffmpeg.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -77,11 +87,11 @@
       <recent name="D:\GoSpace\src\dousheng\app\interact\dal" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\GoSpace\src\dousheng\config" />
       <recent name="D:\GoSpace\src\dousheng\app\interact\db" />
       <recent name="D:\GoSpace\src\dousheng\app\interact\dal" />
       <recent name="D:\GoSpace\src\dousheng\app\gateway" />
       <recent name="D:\GoSpace\src\dousheng\kitex_gen\video" />
-      <recent name="D:\GoSpace\src\dousheng" />
     </key>
   </component>
   <component name="RunManager" selected="Go Build.go build dousheng">

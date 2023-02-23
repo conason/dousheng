@@ -1,18 +1,15 @@
 package serviceImpl
 
 import (
-	"bytes"
 	"dousheng/dao"
 	"dousheng/dao/model"
 	"dousheng/utils"
 	"errors"
 	"fmt"
-	ffmpeg "github.com/u2takey/ffmpeg-go"
 	"io"
 	"io/ioutil"
 	"log"
 	"mime/multipart"
-	"os"
 	"strings"
 	"time"
 )
@@ -38,7 +35,7 @@ func Upload(videoData *multipart.FileHeader, title string, userId int64) error {
 	//获取视频地址
 	playURL := utils.GetVideo(videoName)
 	//截取封面
-	parseCover, err := ParseCover(playURL, 1)
+	parseCover, err := utils.ParseCover(playURL, 1)
 	if err != nil {
 		log.Panicln(err)
 		//return err
@@ -77,21 +74,6 @@ func ParseVideo(videoData *multipart.FileHeader) ([]byte, error) {
 
 	}
 	return data, nil
-}
-
-func ParseCover(videoURL string, frameNum int) ([]byte, error) {
-	// Returns specified frame as []byte
-	buf := bytes.NewBuffer(nil)
-	err := ffmpeg.Input(videoURL).
-		Filter("select", ffmpeg.Args{fmt.Sprintf("gte(n,%d)", frameNum)}).
-		Output("pipe:", ffmpeg.KwArgs{"vframes": 1, "format": "image2", "vcodec": "mjpeg"}).
-		WithOutput(buf, os.Stdout).Run()
-	if err != nil {
-		log.Panicln(err)
-		//return nil, err
-	}
-	byte := buf.Bytes()
-	return byte, nil
 }
 
 func PushVideoToMysql(userId int64, playUrl, coverUrl, title string) error {

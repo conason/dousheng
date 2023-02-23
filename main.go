@@ -2,6 +2,7 @@ package main
 
 import (
 	"dousheng/dao"
+	"dousheng/utils"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -77,6 +78,8 @@ func main() {
 	InitRouter(r)
 
 	dao.Init()
+
+	utils.FilterInit()
 	// Listen and Server in 0.0.0.0:8080
 	r.Run(":8080")
 }
