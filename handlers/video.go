@@ -7,7 +7,6 @@ import (
 	"dousheng/service/serviceImpl"
 	"dousheng/utils"
 	"encoding/json"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"
 	"net/http"
@@ -96,7 +95,7 @@ func Feed(c *gin.Context) {
 		utils.ResolveError(err)
 	}
 	nextTime := int64(score)
-	fmt.Println(redisVideos)
+	//fmt.Println(redisVideos)
 
 	// 限制返回 video 数量
 	var len = len(redisVideos)

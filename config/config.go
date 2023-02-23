@@ -25,7 +25,8 @@ var (
 	SecretKey     = "mhV_z93CyJCcDTmSfU2cSfx_LiejWCjujCCRMuqg"
 	VideoBucket   = "minidouyin-video"
 	PictureBucket = "minidouyin-picture"
-	Domain        = "http://rq9lt9dry.bkt.clouddn.com"
+	DomainVideo   = "http://rq9lt9dry.bkt.clouddn.com"
+	DomainCover   = "http://rq9lfs4ld.bkt.clouddn.com"
 )
 
 //n:a CRUD process can get n video

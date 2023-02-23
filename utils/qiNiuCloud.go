@@ -45,7 +45,7 @@ func PushVideo(key string, data []byte) int32 {
 }
 
 func GetVideo(key string) string {
-	domain := config.Domain
+	domain := config.DomainVideo
 	mac := qbox.NewMac(config.AccessKey, config.SecretKey)
 	deadline := time.Now().Add(time.Second * 3600 * 24 * 365).Unix() //1年有效期
 	privateAccessURL := storage.MakePrivateURL(mac, domain, key, deadline)
@@ -102,7 +102,7 @@ func PushCover(key string, data []byte) int32 {
 }
 
 func GetCover(key string) string {
-	domain := config.Domain
+	domain := config.DomainCover
 	mac := qbox.NewMac(config.AccessKey, config.SecretKey)
 	deadline := time.Now().Add(time.Second * 3600 * 24 * 365).Unix() //1年有效期
 	privateAccessURL := storage.MakePrivateURL(mac, domain, key, deadline)
