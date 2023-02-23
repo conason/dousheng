@@ -58,3 +58,15 @@ func GetFansListByUserId(userId int64) ([]int64, error) {
 
 	return fansList, nil
 }
+
+func IsSub(userId, videoUserId int64) (bool, error) {
+	count, err := dal.Relation.Where(dal.Relation.FollowerID.Eq(userId), dal.Relation.FollowingID.Eq(videoUserId), dal.Relation.Isdeleted.Eq(0)).
+		Count()
+	if err != nil {
+		return false, err
+	}
+	if count <= 0 {
+		return false, nil
+	}
+	return true, nil
+}

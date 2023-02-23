@@ -4,13 +4,15 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="10b93ea2-0b3e-4a53-825a-6caa710396b6" name="Changes" comment="fix chat_msg sequence bug">
+    <list default="true" id="10b93ea2-0b3e-4a53-825a-6caa710396b6" name="Changes" comment="Merge branch 'conason-gin'&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;dao/message.go&#10;#&#9;handlers/message.go">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dao/fav.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/fav.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dao/init.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/init.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dao/message.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/message.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/handlers/comment.go" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/comment.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/handlers/message.go" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/message.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/dateFMTConv.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dateFMTConv.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dao/relation.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/relation.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/handlers/fav.go" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/fav.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/handlers/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/user.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/handlers/video.go" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/video.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/serviceImpl/videoServiceImpl.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/serviceImpl/videoServiceImpl.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
