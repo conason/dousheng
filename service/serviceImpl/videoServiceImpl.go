@@ -10,6 +10,7 @@ import (
 	ffmpeg "github.com/u2takey/ffmpeg-go"
 	"io"
 	"io/ioutil"
+	"log"
 	"mime/multipart"
 	"os"
 	"strings"
@@ -21,6 +22,7 @@ func Upload(videoData *multipart.FileHeader, title string, userId int64) error {
 	//将*multipart.FileHeader类型转化为[]byte
 	parseVideo, err := ParseVideo(videoData)
 	if err != nil {
+		log.Panicln(err)
 		return err
 	}
 	//视频文件名
@@ -38,7 +40,7 @@ func Upload(videoData *multipart.FileHeader, title string, userId int64) error {
 	//截取封面
 	parseCover, err := ParseCover(playURL, 1)
 	if err != nil {
-		fmt.Println(err)
+		log.Panicln(err)
 		//return err
 	}
 
@@ -85,7 +87,8 @@ func ParseCover(videoURL string, frameNum int) ([]byte, error) {
 		Output("pipe:", ffmpeg.KwArgs{"vframes": 1, "format": "image2", "vcodec": "mjpeg"}).
 		WithOutput(buf, os.Stdout).Run()
 	if err != nil {
-		return nil, err
+		log.Panicln(err)
+		//return nil, err
 	}
 	byte := buf.Bytes()
 	return byte, nil
