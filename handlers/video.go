@@ -7,6 +7,7 @@ import (
 	"dousheng/service/serviceImpl"
 	"dousheng/utils"
 	"encoding/json"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"
 	"net/http"
@@ -80,16 +81,23 @@ func Feed(c *gin.Context) {
 	}
 	// redis 返回为空
 	if len(redisVideos) <= 0 {
-		//fmt.Println("yse")
-		c.JSON(http.StatusOK, DouyinFeedResponse{
-			StatusCode: -1,
-			StatusMsg:  "no more videos",
-			VideoList:  nil,
-			NextTime:   0,
-		})
-		return
+		fmt.Println("yse")
+		redisVideos, err = utils.Redis.ZRevRange(utils.Ctx, config.VIDEOSKEY, timestamp, 0).Result()
+		if err != nil {
+			//log.Println(err)
+			c.JSON(http.StatusOK, DouyinFeedResponse{
+				StatusCode: -1,
+				StatusMsg:  "server is busy please try again",
+				VideoList:  nil,
+				NextTime:   timestamp,
+			})
+			return
+		}
 	}
 	// 返回视频最早时间戳
+	if redisVideos == nil {
+		return
+	}
 	score, err := utils.Redis.ZScore(utils.Ctx, config.VIDEOSKEY, redisVideos[0]).Result()
 	if err != nil {
 		utils.ResolveError(err)
@@ -103,8 +111,8 @@ func Feed(c *gin.Context) {
 		len = config.N
 	}
 	videoData := make([]Video, len)
-	for i, video := range redisVideos {
-		err = json.Unmarshal([]byte(video), &videoData[i])
+	for i := 0; i < len; i++ {
+		err = json.Unmarshal([]byte(redisVideos[i]), &videoData[i])
 		if err != nil {
 			c.JSON(http.StatusOK, DouyinFeedResponse{
 				StatusCode: -1,
@@ -116,11 +124,24 @@ func Feed(c *gin.Context) {
 		}
 	}
 
+	//for i, video := range redisVideos {
+	//	err = json.Unmarshal([]byte(video), &videoData[i])
+	//	if err != nil {
+	//		c.JSON(http.StatusOK, DouyinFeedResponse{
+	//			StatusCode: -1,
+	//			StatusMsg:  "feed video failed",
+	//			VideoList:  nil,
+	//			NextTime:   timestamp,
+	//		})
+	//		return
+	//	}
+	//}
+
 	// 用户未登录
-	if userId <= 0 {
+	if userId == 0 {
 		c.JSON(http.StatusOK, DouyinFeedResponse{
-			StatusCode: -1,
-			StatusMsg:  "feed video failed",
+			StatusCode: 0,
+			StatusMsg:  "feed video",
 			VideoList:  videoData,
 			NextTime:   nextTime,
 		})

@@ -27,6 +27,7 @@ func Register(username, password string) (int64, error) {
 		return 0, err
 	}
 
+	userId, err = dao.GetUserIdByName(username)
 	return userId, nil
 }
 

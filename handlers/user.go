@@ -111,7 +111,7 @@ func GetUserData(c *gin.Context) {
 		return
 	}
 
-	user, err := serviceImpl.GetUserData(userid)
+	user, err := serviceImpl.GetUserById(userid)
 	//获取用户数据失败
 	if err != nil {
 		c.JSON(http.StatusOK, DouyinUserResponse{

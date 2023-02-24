@@ -62,7 +62,7 @@ func Send(ctx *gin.Context) {
 		return
 	}
 	//敏感词过滤
-	utils.Filter.Replace(content, '*')
+	content = utils.Filter.Replace(content, '*')
 
 	err = serviceImpl.SendMsg(model.Message{
 		ToUserID:   toUserId,
