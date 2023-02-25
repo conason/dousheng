@@ -4,15 +4,8 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="10b93ea2-0b3e-4a53-825a-6caa710396b6" name="Changes" comment="fix some problem">
-      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+    <list default="true" id="10b93ea2-0b3e-4a53-825a-6caa710396b6" name="Changes" comment="add readme">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dao/init.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/init.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/handlers/message.go" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/message.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/handlers/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/user.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/handlers/video.go" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/video.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/serviceImpl/userServiceImpl.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/serviceImpl/userServiceImpl.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,6 +64,7 @@
     &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
     &quot;go.sdk.automatically.set&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;D:/GoSpace/src/chigo&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;go.vgo&quot;
   }
 }</component>
@@ -194,7 +188,8 @@
     <MESSAGE value="change gitignore" />
     <MESSAGE value="words filter" />
     <MESSAGE value="fix some problem" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix some problem" />
+    <MESSAGE value="add readme" />
+    <option name="LAST_COMMIT_MESSAGE" value="add readme" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
