@@ -4,15 +4,10 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="10b93ea2-0b3e-4a53-825a-6caa710396b6" name="Changes" comment="add sql">
-      <change afterPath="$PROJECT_DIR$/dao/model/comment.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dao/model/user.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_2023_2_21_19_42_[Changes]1/shelved.patch" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_2023_2_21_19_42__Changes_1.xml" beforeDir="false" />
+    <list default="true" id="10b93ea2-0b3e-4a53-825a-6caa710396b6" name="Changes" comment="try remove gormgen">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dao/model/tb_comment.gen.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/model/tb_comment.gen.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dao/model/tb_user.gen.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/model/tb_user.gen.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/handlers/comment.go" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/comment.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dao/init.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/init.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dao/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/user.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,7 +65,7 @@
     &quot;configurable.GoLibrariesConfigurable.is.expanded&quot;: &quot;true&quot;,
     &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
     &quot;go.sdk.automatically.set&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/GoSpace&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/GoSpace/src/Ginblog&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -202,7 +197,8 @@
     <MESSAGE value="add readme" />
     <MESSAGE value="ignore" />
     <MESSAGE value="add sql" />
-    <option name="LAST_COMMIT_MESSAGE" value="add sql" />
+    <MESSAGE value="try remove gormgen" />
+    <option name="LAST_COMMIT_MESSAGE" value="try remove gormgen" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
