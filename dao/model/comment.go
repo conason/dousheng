@@ -6,8 +6,8 @@ const TableNameComment = "tb_comment"
 
 // Comment mapped from table <tb_comment>
 type Comment struct {
-	ID int64 `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"` // 评论id
-	//UserID     int64     `gorm:"column:user_id" json:"user_id"`                                            			    // 用户id
+	ID         int64     `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`                                    // 评论id
+	UserID     int64     `gorm:"column:user_id" json:"user_id"`                                                        // 用户id
 	VideoID    int64     `gorm:"column:video_id" json:"video_id"`                                                      // 视频id
 	Content    string    `gorm:"column:content" json:"content"`                                                        // 评论
 	IsDeleted  int32     `gorm:"column:is_deleted" json:"is_deleted"`                                                  // 删除评论
