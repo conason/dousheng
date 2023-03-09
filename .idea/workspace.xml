@@ -4,9 +4,11 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="10b93ea2-0b3e-4a53-825a-6caa710396b6" name="Changes" comment="had remove userGORMGen">
-      <change beforePath="$PROJECT_DIR$/dao/comment.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/comment.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dao/model/comment.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/model/comment.go" afterDir="false" />
+    <list default="true" id="10b93ea2-0b3e-4a53-825a-6caa710396b6" name="Changes" comment="had remove commentGORMGen">
+      <change afterPath="$PROJECT_DIR$/dao/model/video.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dao/model/tb_video.gen.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/model/tb_video.gen.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dao/video.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/video.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -198,7 +200,8 @@
     <MESSAGE value="add sql" />
     <MESSAGE value="try remove gormgen" />
     <MESSAGE value="had remove userGORMGen" />
-    <option name="LAST_COMMIT_MESSAGE" value="had remove userGORMGen" />
+    <MESSAGE value="had remove commentGORMGen" />
+    <option name="LAST_COMMIT_MESSAGE" value="had remove commentGORMGen" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
