@@ -74,7 +74,7 @@ func CommentAction(ctx *gin.Context) {
 	}
 
 	comment := model.Comment{
-		UserID:     userId,
+		//UserID:     userId,
 		VideoID:    videoid,
 		Content:    text,
 		IsDeleted:  int32(actionType),
@@ -197,7 +197,7 @@ func VideoCommentList(ctx *gin.Context) {
 	len := len(commentList)
 	var comments = make([]Comment, len)
 	for i := 0; i < len; i++ {
-		user, err := dao.GetUserById(commentList[i].UserID)
+		user, err := dao.GetUserById(commentList[i].User.ID)
 		if err != nil {
 			ctx.JSON(http.StatusOK, DouyinCommentListResponse{
 				StatusCode:  -1,
