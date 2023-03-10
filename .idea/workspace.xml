@@ -4,9 +4,10 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="10b93ea2-0b3e-4a53-825a-6caa710396b6" name="Changes" comment="had remove favoriteGORMGen">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    <list default="true" id="10b93ea2-0b3e-4a53-825a-6caa710396b6" name="Changes" comment="gitignore change">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/config/config.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/qiNiuCloud.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/qiNiuCloud.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -203,7 +204,8 @@
     <MESSAGE value="had remove relationGORMGen" />
     <MESSAGE value="had remove msgGORMGen" />
     <MESSAGE value="had remove favoriteGORMGen" />
-    <option name="LAST_COMMIT_MESSAGE" value="had remove favoriteGORMGen" />
+    <MESSAGE value="gitignore change" />
+    <option name="LAST_COMMIT_MESSAGE" value="gitignore change" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
