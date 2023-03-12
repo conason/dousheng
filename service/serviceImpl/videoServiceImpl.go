@@ -37,8 +37,8 @@ func Upload(videoData *multipart.FileHeader, title string, userId int64) error {
 	//截取封面
 	parseCover, err := utils.ParseCover(playURL, 1)
 	if err != nil {
-		log.Panicln(err)
-		//return err
+		//log.Panicln(err)
+		return err
 	}
 
 	//封面上传
@@ -51,7 +51,7 @@ func Upload(videoData *multipart.FileHeader, title string, userId int64) error {
 	//上传至数据库
 	err = PushVideoToMysql(userId, playURL, coverURL, title)
 	if err != nil {
-		fmt.Println(err)
+		//fmt.Println(err)
 		return err
 	}
 	return nil

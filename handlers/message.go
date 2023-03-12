@@ -10,13 +10,13 @@ import (
 	ptime "time"
 )
 
-type Message struct {
-	ID         int64  `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`                        // 消息id
-	ToUserID   int64  `gorm:"column:to_user_id" json:"to_user_id"`                                      // 接收方id
-	FromUserID int64  `gorm:"column:from_user_id" json:"from_user_id"`                                  // 发送方id
-	Content    string `gorm:"column:content" json:"content"`                                            // 消息内容
-	CreateTime int64  `gorm:"column:create_time;not null;default:CURRENT_TIMESTAMP" json:"create_time"` // 创建时间
-}
+//type Message struct {
+//	ID         int64  `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`                        // 消息id
+//	ToUserID   int64  `gorm:"column:to_user_id" json:"to_user_id"`                                      // 接收方id
+//	FromUserID int64  `gorm:"column:from_user_id" json:"from_user_id"`                                  // 发送方id
+//	Content    string `gorm:"column:content" json:"content"`                                            // 消息内容
+//	CreateTime int64  `gorm:"column:create_time;not null;default:CURRENT_TIMESTAMP" json:"create_time"` // 创建时间
+//}
 
 type DouyinMessageActionResponse struct {
 	StatusCode int32  `protobuf:"varint,1,opt,name=status_code,json=statusCode,proto3" json:"status_code,omitempty"`   // 状态码，0-成功，其他值-失败
@@ -24,9 +24,9 @@ type DouyinMessageActionResponse struct {
 }
 
 type DouyinMessageChatResponse struct {
-	StatusCode  int32     `protobuf:"varint,1,opt,name=status_code,json=statusCode,proto3" json:"status_code,omitempty"`   // 状态码，0-成功，其他值-失败
-	StatusMsg   string    `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg,proto3,oneof" json:"status_msg,omitempty"` // 返回状态描述
-	MessageList []Message `protobuf:"bytes,3,rep,name=message_list,json=messageList,proto3" json:"message_list,omitempty"` // 消息列表
+	StatusCode  int32           `protobuf:"varint,1,opt,name=status_code,json=statusCode,proto3" json:"status_code,omitempty"`   // 状态码，0-成功，其他值-失败
+	StatusMsg   string          `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg,proto3,oneof" json:"status_msg,omitempty"` // 返回状态描述
+	MessageList []model.Message `protobuf:"bytes,3,rep,name=message_list,json=messageList,proto3" json:"message_list,omitempty"` // 消息列表
 }
 
 func Send(ctx *gin.Context) {
@@ -131,28 +131,22 @@ func Receive(ctx *gin.Context) {
 		return
 	}
 
-	var messages []Message
+	//var messages []Message
 	if msg != nil {
-		messages = transMsg(msg)
+		//转换信息时间戳
+		transMsg(msg)
 	}
 	ctx.JSON(http.StatusOK, DouyinMessageChatResponse{
 		StatusCode:  0,
 		StatusMsg:   "receive message successfully",
-		MessageList: messages,
+		MessageList: msg,
 	})
 }
 
-func transMsg(msg []model.Message) []Message {
+func transMsg(msg []model.Message) {
 	len := len(msg)
-	messages := make([]Message, len)
 	for i := 0; i < len; i++ {
-		messages[i] = Message{
-			ID:         0,
-			ToUserID:   msg[i].ToUserID,
-			FromUserID: msg[i].FromUserID,
-			Content:    msg[i].Content,
-			CreateTime: msg[i].CreateTime.Unix(),
-		}
+		msg[i].CreateData = msg[i].CreateTime.Unix()
 	}
-	return messages
+	return
 }

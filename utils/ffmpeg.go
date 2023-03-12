@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	ffmpeg "github.com/u2takey/ffmpeg-go"
-	"log"
 	"os"
 )
 
@@ -17,8 +16,8 @@ func ParseCover(videoURL string, frameNum int) ([]byte, error) {
 		Output("pipe:", ffmpeg.KwArgs{"vframes": 1, "format": "image2", "vcodec": "mjpeg"}).
 		WithOutput(buf, os.Stdout).Run()
 	if err != nil {
-		log.Panicln(err)
-		//return nil, err
+		//log.Panicln(err)
+		return nil, err
 	}
 	byte := buf.Bytes()
 	return byte, nil

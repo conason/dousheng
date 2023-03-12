@@ -3,11 +3,11 @@ package config
 //Database connection's config
 
 var (
-	Name         = "root"
-	Password     = "sx221410"
+	MySQLUser    = "root"
+	MySQLPWD     = "root"
 	DNS          = "localhost"
-	DatabasePort = 701
-	DatabaseName = "minidouyin"
+	DatabasePort = 3306
+	DatabaseName = "dousheng_db"
 )
 
 //JWT secret Key
@@ -21,12 +21,12 @@ var Token = "shuxindouyin"
 //Qi Niu cloud config file
 
 var (
-	AccessKey     = "XuigBGSCJ7vpAtRtpu04NqLGLXpEROCaqgOxTZ0W"
-	SecretKey     = "mhV_z93CyJCcDTmSfU2cSfx_LiejWCjujCCRMuqg"
-	VideoBucket   = "minidouyin-video"
-	PictureBucket = "minidouyin-picture"
-	DomainVideo   = "http://rq9lt9dry.bkt.clouddn.com"
-	DomainCover   = "http://rq9lfs4ld.bkt.clouddn.com"
+	AccessKey     = "PtGMD2Uxg-lUSBzFhdRcE6xHGZmPR1vxGGhR56e4"
+	SecretKey     = "lqDuMbydAVGdplCaN6D5n46giWal5SXn3p3O3GsN"
+	VideoBucket   = "conason"
+	PictureBucket = "conason-pic"
+	DomainVideo   = "http://rrb05r4gx.hn-bkt.clouddn.com"
+	DomainCover   = "http://rrb1dnse4.hn-bkt.clouddn.com"
 )
 
 //n:a CRUD process can get n video

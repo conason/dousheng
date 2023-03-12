@@ -22,7 +22,7 @@ func Register(username, password string) (int64, error) {
 		Password:   password,
 		CreateTime: time.Now(),
 	}
-	err = dao.SaveUser(user)
+	err = dao.SaveUser(&user)
 	if err != nil {
 		return 0, err
 	}

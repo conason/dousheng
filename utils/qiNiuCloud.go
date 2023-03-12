@@ -19,7 +19,7 @@ func PushVideo(key string, data []byte) int32 {
 
 	cfg := storage.Config{}
 	// 空间对应的机房
-	cfg.Region = &storage.ZoneHuadongZheJiang2
+	cfg.Region = &storage.Zone_z2
 	// 是否使用https域名
 	cfg.UseHTTPS = true
 	// 上传是否使用CDN上传加速
@@ -76,7 +76,7 @@ func PushCover(key string, data []byte) int32 {
 
 	cfg := storage.Config{}
 	// 空间对应的机房
-	cfg.Region = &storage.ZoneHuadongZheJiang2
+	cfg.Region = &storage.Zone_z2
 	// 是否使用https域名
 	cfg.UseHTTPS = true
 	// 上传是否使用CDN上传加速

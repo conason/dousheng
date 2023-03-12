@@ -18,6 +18,6 @@
 #
 #=======
 #>>>>>>> conason-gin
-#/config
-#/dao/build
-#/dao/init.go
+/config
+/dao/build
+/dao/init.go

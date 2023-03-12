@@ -12,23 +12,23 @@ import (
 	"time"
 )
 
-type Comment struct {
-	Id         int64      `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`                                  // 视频评论id
-	User       model.User `protobuf:"bytes,2,opt,name=user,proto3" json:"user,omitempty"`                               // 评论用户信息
-	Content    string     `protobuf:"bytes,3,opt,name=content,proto3" json:"content,omitempty"`                         // 评论内容
-	CreateDate string     `protobuf:"bytes,4,opt,name=create_date,json=createDate,proto3" json:"create_date,omitempty"` // 评论发布日期，格式 mm-dd
-}
+//type Comment struct {
+//	Id         int64      `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`                                  // 视频评论id
+//	User       model.User `protobuf:"bytes,2,opt,name=user,proto3" json:"user,omitempty"`                               // 评论用户信息
+//	Content    string     `protobuf:"bytes,3,opt,name=content,proto3" json:"content,omitempty"`                         // 评论内容
+//	CreateDate string     `protobuf:"bytes,4,opt,name=create_date,json=createDate,proto3" json:"create_date,omitempty"` // 评论发布日期，格式 mm-dd
+//}
 
 type DouyinCommentActionResponse struct {
-	StatusCode int32   `protobuf:"varint,1,opt,name=status_code,json=statusCode,proto3" json:"status_code,omitempty"` // 状态码，0-成功，其他值-失败
-	StatusMsg  string  `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg,proto3" json:"status_msg,omitempty"`     // 返回状态描述
-	Comment    Comment `protobuf:"bytes,3,opt,name=comment,proto3" json:"comment,omitempty"`                          // 评论成功返回评论内容，不需要重新拉取整个列表
+	StatusCode int32         `protobuf:"varint,1,opt,name=status_code,json=statusCode,proto3" json:"status_code,omitempty"` // 状态码，0-成功，其他值-失败
+	StatusMsg  string        `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg,proto3" json:"status_msg,omitempty"`     // 返回状态描述
+	Comment    model.Comment `protobuf:"bytes,3,opt,name=comment,proto3" json:"comment,omitempty"`                          // 评论成功返回评论内容，不需要重新拉取整个列表
 }
 
 type DouyinCommentListResponse struct {
-	StatusCode  int32     `protobuf:"varint,1,opt,name=status_code,json=statusCode,proto3" json:"status_code,omitempty"`   // 状态码，0-成功，其他值-失败
-	StatusMsg   string    `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg,proto3,oneof" json:"status_msg,omitempty"` // 返回状态描述
-	CommentList []Comment `protobuf:"bytes,3,rep,name=comment_list,json=commentList,proto3" json:"comment_list,omitempty"` // 评论列表
+	StatusCode  int32           `protobuf:"varint,1,opt,name=status_code,json=statusCode,proto3" json:"status_code,omitempty"`   // 状态码，0-成功，其他值-失败
+	StatusMsg   string          `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg,proto3,oneof" json:"status_msg,omitempty"` // 返回状态描述
+	CommentList []model.Comment `protobuf:"bytes,3,rep,name=comment_list,json=commentList,proto3" json:"comment_list,omitempty"` // 评论列表
 }
 
 func CommentAction(ctx *gin.Context) {
@@ -43,7 +43,7 @@ func CommentAction(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, DouyinCommentActionResponse{
 			StatusCode: -1,
 			StatusMsg:  "invalid videoId",
-			Comment:    Comment{},
+			Comment:    model.Comment{},
 		})
 		return
 	}
@@ -54,7 +54,7 @@ func CommentAction(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, DouyinCommentActionResponse{
 			StatusCode: -1,
 			StatusMsg:  "invalid commentText",
-			Comment:    Comment{},
+			Comment:    model.Comment{},
 		})
 		return
 	}
@@ -68,13 +68,13 @@ func CommentAction(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, DouyinCommentActionResponse{
 			StatusCode: -1,
 			StatusMsg:  "invalid actionType ",
-			Comment:    Comment{},
+			Comment:    model.Comment{},
 		})
 		return
 	}
 
 	comment := model.Comment{
-		UserID:     userId,
+		//UserID:     userId,
 		VideoID:    videoid,
 		Content:    text,
 		IsDeleted:  int32(actionType),
@@ -86,7 +86,7 @@ func CommentAction(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, DouyinCommentActionResponse{
 			StatusCode: -1,
 			StatusMsg:  err.Error(),
-			Comment:    Comment{},
+			Comment:    model.Comment{},
 		})
 		return
 	}
@@ -96,21 +96,23 @@ func CommentAction(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, DouyinCommentActionResponse{
 			StatusCode: -1,
 			StatusMsg:  err.Error(),
-			Comment:    Comment{},
+			Comment:    model.Comment{},
 		})
 		return
 	}
 
-	c := Comment{
-		User:       user,
-		Content:    text,
-		CreateDate: comment.CreateTime.Format(config.TEMPTIME),
-	}
+	//c := Comment{
+	//	User:       user,
+	//	Content:    text,
+	//	CreateDate: comment.CreateTime.Format(config.TEMPTIME),
+	//}
+	comment.User = user
+	comment.CreateDate = comment.CreateTime.Format(config.TEMPTIME)
 
 	ctx.JSON(http.StatusOK, DouyinCommentActionResponse{
 		StatusCode: 0,
 		StatusMsg:  "comment success",
-		Comment:    c,
+		Comment:    comment,
 	})
 }
 
@@ -195,9 +197,9 @@ func VideoCommentList(ctx *gin.Context) {
 	}
 
 	len := len(commentList)
-	var comments = make([]Comment, len)
+	//var comments = make([]Comment, len)
 	for i := 0; i < len; i++ {
-		user, err := dao.GetUserById(commentList[i].UserID)
+		user, err := dao.GetUserById(commentList[i].User.ID)
 		if err != nil {
 			ctx.JSON(http.StatusOK, DouyinCommentListResponse{
 				StatusCode:  -1,
@@ -206,17 +208,19 @@ func VideoCommentList(ctx *gin.Context) {
 			})
 			return
 		}
-		comments[i] = Comment{
-			Id:         commentList[i].ID,
-			User:       user,
-			Content:    commentList[i].Content,
-			CreateDate: commentList[i].CreateTime.Format(config.TEMPTIME),
-		}
+		commentList[i].User = user
+		commentList[i].CreateDate = commentList[i].CreateTime.Format(config.TEMPTIME)
+		//comments[i] = Comment{
+		//	Id:         commentList[i].ID,
+		//	User:       user,
+		//	Content:    commentList[i].Content,
+		//	CreateDate: commentList[i].CreateTime.Format(config.TEMPTIME),
+		//}
 	}
 
 	ctx.JSON(http.StatusOK, DouyinCommentListResponse{
 		StatusCode:  0,
 		StatusMsg:   "get video_comment_list success",
-		CommentList: comments,
+		CommentList: commentList,
 	})
 }
