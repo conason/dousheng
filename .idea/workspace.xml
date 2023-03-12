@@ -4,32 +4,9 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="10b93ea2-0b3e-4a53-825a-6caa710396b6" name="Changes" comment="config updata">
+    <list default="true" id="10b93ea2-0b3e-4a53-825a-6caa710396b6" name="Changes" comment="removed grom gen">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/config/config.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dao/comment.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/comment.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dao/fav.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/fav.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dao/message.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/message.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dao/model/comment.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/model/comment.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dao/model/message.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/model/message.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dao/model/relation.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/model/relation.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dao/model/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/model/user.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dao/model/video.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/model/video.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dao/relation.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/relation.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dao/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/user.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dao/video.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/video.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/handlers/comment.go" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/comment.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/handlers/fav.go" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/fav.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/handlers/message.go" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/message.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/handlers/relation.go" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/relation.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/handlers/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/user.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/handlers/video.go" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/video.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/serviceImpl/relationServiceImpl.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/serviceImpl/relationServiceImpl.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/serviceImpl/userServiceImpl.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/serviceImpl/userServiceImpl.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/serviceImpl/videoServiceImpl.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/serviceImpl/videoServiceImpl.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/dateFMTConv.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dateConv.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/ffmpeg.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/ffmpeg.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/qiNiuCloud.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/qiNiuCloud.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,12 +23,12 @@
   </component>
   <component name="GOROOT" url="file://$PROJECT_DIR$/../../../Program Files/Go" />
   <component name="Git.Merge.Settings">
-    <option name="BRANCH" value="conason-wordfilter" />
+    <option name="BRANCH" value="origin/conason-fix" />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="main" />
+        <entry key="$PROJECT_DIR$" value="conason-fix" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -228,7 +205,8 @@
     <MESSAGE value="had remove favoriteGORMGen" />
     <MESSAGE value="gitignore change" />
     <MESSAGE value="config updata" />
-    <option name="LAST_COMMIT_MESSAGE" value="config updata" />
+    <MESSAGE value="removed grom gen" />
+    <option name="LAST_COMMIT_MESSAGE" value="removed grom gen" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>

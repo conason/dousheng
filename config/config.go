@@ -22,7 +22,7 @@ var Token = "shuxindouyin"
 
 var (
 	AccessKey     = "PtGMD2Uxg-lUSBzFhdRcE6xHGZmPR1vxGGhR56e4"
-	SecretKey     = "lqDuMbydAVGdplCaN6D5n46giWal5SXn3p3O3GsN"
+	SecretKey     = ""
 	VideoBucket   = "conason"
 	PictureBucket = "conason-pic"
 	DomainVideo   = "http://rrb05r4gx.hn-bkt.clouddn.com"
