@@ -7,29 +7,6 @@
     <list default="true" id="10b93ea2-0b3e-4a53-825a-6caa710396b6" name="Changes" comment="config updata">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/config/config.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dao/comment.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/comment.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dao/fav.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/fav.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dao/message.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/message.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dao/model/comment.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/model/comment.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dao/model/message.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/model/message.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dao/model/relation.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/model/relation.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dao/model/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/model/user.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dao/model/video.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/model/video.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dao/relation.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/relation.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dao/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/user.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dao/video.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/video.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/handlers/comment.go" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/comment.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/handlers/fav.go" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/fav.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/handlers/message.go" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/message.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/handlers/relation.go" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/relation.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/handlers/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/user.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/handlers/video.go" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/video.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/serviceImpl/relationServiceImpl.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/serviceImpl/relationServiceImpl.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/serviceImpl/userServiceImpl.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/serviceImpl/userServiceImpl.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/serviceImpl/videoServiceImpl.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/serviceImpl/videoServiceImpl.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/dateFMTConv.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dateConv.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/ffmpeg.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/ffmpeg.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/qiNiuCloud.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/qiNiuCloud.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
