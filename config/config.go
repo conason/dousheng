@@ -21,7 +21,7 @@ var Token = "shuxindouyin"
 //Qi Niu cloud config file
 
 var (
-	AccessKey     = "PtGMD2Uxg-lUSBzFhdRcE6xHGZmPR1vxGGhR56e4"
+	AccessKey     = ""
 	SecretKey     = ""
 	VideoBucket   = "conason"
 	PictureBucket = "conason-pic"
