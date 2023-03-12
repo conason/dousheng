@@ -13,6 +13,12 @@ type Relation struct {
 	CreateTime  time.Time `gorm:"column:create_time;not null;default:CURRENT_TIMESTAMP" json:"create_time"` // 创建时间
 }
 
+type FriendUser struct {
+	user    User   `json:"user"`
+	message string `json:"message"`
+	msgType int64  `json:"msgType"`
+}
+
 // TableName Relation's table name
 func (*Relation) TableName() string {
 	return TableNameRelation

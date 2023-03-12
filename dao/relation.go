@@ -6,7 +6,10 @@ import (
 
 func RelationSave(relation model.Relation) error {
 	var count int64
-	err := db.Model(&relation).Where("follower_id = ? AND following_id = ?", relation.FollowerID, relation.FollowingID).Count(&count).Error
+	err := db.Model(&relation).
+		Where("follower_id = ? AND following_id = ?", relation.FollowerID, relation.FollowingID).
+		Count(&count).
+		Error
 	if err != nil {
 		return err
 	}
@@ -14,7 +17,7 @@ func RelationSave(relation model.Relation) error {
 		err = db.Model(&relation).UpdateColumn("is_deleted", relation.IsDeleted).Error
 		return err
 	}
-	err = db.Create(&relation).Error
+	err = db.Model(&model.Relation{}).Create(&relation).Error
 	return err
 	//var exits model.Relation
 	//err := dal.Relation.

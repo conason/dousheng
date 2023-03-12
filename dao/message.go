@@ -6,7 +6,7 @@ import (
 )
 
 func MessageSave(message model.Message) error {
-	err := db.Create(&message).Error
+	err := db.Model(&model.Message{}).Create(&message).Error
 
 	return err
 	//err := dal.Message.Save(&message)
@@ -18,7 +18,8 @@ func MessageSave(message model.Message) error {
 
 func GetMessageToUser(userId, toUserId int64, preTime time.Time) ([]model.Message, error) {
 	var msg []model.Message
-	err := db.Where("to_user_id = ? AND from_user_id = ? AND create_time > ?", userId, toUserId, preTime).
+	err := db.Model(&model.Message{}).
+		Where("to_user_id = ? AND from_user_id = ? AND create_time > ?", userId, toUserId, preTime).
 		Order("create_time").
 		Scan(&msg).
 		Error
@@ -36,7 +37,8 @@ func GetMessageToUser(userId, toUserId int64, preTime time.Time) ([]model.Messag
 
 func GetAllMsgToUser(userId, toUserId int64) ([]model.Message, error) {
 	var msg []model.Message
-	err := db.Where("to_user_id = ? AND from_user_id = ?", userId, toUserId).
+	err := db.Model(&model.Message{}).
+		Where("to_user_id = ? AND from_user_id = ?", userId, toUserId).
 		Or("to_user_id = ? AND from_user_id = ? AND create_time > ?", toUserId, userId).
 		Order("create_time").
 		Scan(&msg).

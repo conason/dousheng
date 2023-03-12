@@ -4,9 +4,31 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="10b93ea2-0b3e-4a53-825a-6caa710396b6" name="Changes" comment="gitignore change">
+    <list default="true" id="10b93ea2-0b3e-4a53-825a-6caa710396b6" name="Changes" comment="config updata">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/config/config.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dao/comment.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/comment.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dao/fav.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/fav.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dao/message.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/message.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dao/model/comment.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/model/comment.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dao/model/message.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/model/message.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dao/model/relation.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/model/relation.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dao/model/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/model/user.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dao/model/video.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/model/video.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dao/relation.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/relation.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dao/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/user.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dao/video.go" beforeDir="false" afterPath="$PROJECT_DIR$/dao/video.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/handlers/comment.go" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/comment.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/handlers/fav.go" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/fav.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/handlers/message.go" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/message.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/handlers/relation.go" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/relation.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/handlers/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/user.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/handlers/video.go" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/video.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/serviceImpl/relationServiceImpl.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/serviceImpl/relationServiceImpl.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/serviceImpl/userServiceImpl.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/serviceImpl/userServiceImpl.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/serviceImpl/videoServiceImpl.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/serviceImpl/videoServiceImpl.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/dateFMTConv.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/dateConv.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/ffmpeg.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/ffmpeg.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/utils/qiNiuCloud.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/qiNiuCloud.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -48,32 +70,32 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_ADD_EXTERNAL_FILES": "true",
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "DefaultGoTemplateProperty": "Go File",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.go.format.on.save.advertiser.fired": "true",
-    "RunOnceActivity.go.formatter.settings.were.checked": "true",
-    "RunOnceActivity.go.migrated.go.modules.settings": "true",
-    "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
-    "RunOnceActivity.go.watchers.conflict.with.on.save.actions.check.performed": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "configurable..is.expanded": "true",
-    "configurable.GoLibrariesConfigurable.is.expanded": "true",
-    "go.import.settings.migrated": "true",
-    "go.sdk.automatically.set": "true",
-    "last_opened_file_path": "D:/GoSpace/src/tiktok",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "goland.project.structure"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;DefaultGoTemplateProperty&quot;: &quot;Go File&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.format.on.save.advertiser.fired&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.modules.go.list.on.any.changes.was.set&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.watchers.conflict.with.on.save.actions.check.performed&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;configurable..is.expanded&quot;: &quot;true&quot;,
+    &quot;configurable.GoLibrariesConfigurable.is.expanded&quot;: &quot;true&quot;,
+    &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
+    &quot;go.sdk.automatically.set&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/GoSpace/src/tiktok&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;goland.project.structure&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\GoSpace\src\dousheng\handlers" />
@@ -205,7 +227,8 @@
     <MESSAGE value="had remove msgGORMGen" />
     <MESSAGE value="had remove favoriteGORMGen" />
     <MESSAGE value="gitignore change" />
-    <option name="LAST_COMMIT_MESSAGE" value="gitignore change" />
+    <MESSAGE value="config updata" />
+    <option name="LAST_COMMIT_MESSAGE" value="config updata" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>

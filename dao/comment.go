@@ -5,7 +5,7 @@ import (
 )
 
 func SaveComment(comment model.Comment) error {
-	err := db.Create(&comment).Error
+	err := db.Model(&model.Comment{}).Create(&comment).Error
 
 	//err := dal.Comment.Save(&comment)
 	//if err != nil {
@@ -17,7 +17,7 @@ func SaveComment(comment model.Comment) error {
 func GetCommentByUserId(userId int64) ([]model.Comment, error) {
 	var comments []model.Comment
 
-	err := db.Where("user_id = ? AND is_deleted = 1", userId).Scan(&comments).Error
+	err := db.Model(&model.Comment{}).Where("user_id = ? AND is_deleted = 1", userId).Scan(&comments).Error
 
 	return comments, err
 
@@ -37,7 +37,7 @@ func GetCommentByUserId(userId int64) ([]model.Comment, error) {
 func GetCommentByVideoId(videoId int64) ([]model.Comment, error) {
 	var comments []model.Comment
 
-	err := db.Where("video_id = ? AND is_deleted = 1", videoId).Scan(&comments).Error
+	err := db.Model(&model.Comment{}).Where("video_id = ? AND is_deleted = 1", videoId).Scan(&comments).Error
 
 	return comments, err
 

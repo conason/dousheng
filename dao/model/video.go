@@ -16,7 +16,7 @@ type Video struct {
 	Title         string    `gorm:"column:title" json:"title"`                                                // 视频标题
 	CreateDate    time.Time `gorm:"column:create_date;not null;default:CURRENT_TIMESTAMP" json:"create_date"` // 创建时间
 	UpdateDate    time.Time `gorm:"column:update_date;not null;default:CURRENT_TIMESTAMP" json:"update_date"` // 更新时间
-	IsFavorite    bool      `json:"is_favorite"`                                                              // 是否点赞
+	IsFavorite    bool      `gorm:"-" json:"is_favorite"`                                                     // 是否点赞
 }
 
 //type Video struct {

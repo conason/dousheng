@@ -7,7 +7,7 @@ import (
 
 // SaveUser 用户注册
 func SaveUser(user *model.User) error {
-	err := db.Create(&user).Error
+	err := db.Model(&model.User{}).Create(&user).Error
 	return err
 	//err := dal.User.Create(&user)
 	//if err != nil {
@@ -20,25 +20,23 @@ func SaveUser(user *model.User) error {
 // GetUserIdByName 通过username查找用户并返回其id
 func GetUserIdByName(username string) (int64, error) {
 	var userId int64
+	err := db.Model(&model.User{}).Select("id").Where("name=?", username).Take(&userId).Error
 
-	err := db.Select("id").Where("name=?", username).Take(&userId).Error
-
-	return userId, err
+	//return userId, err
 	//err := dal.User.
 	//	Select(dal.User.ID).
 	//	Where(dal.User.Name.Eq(username)).Scan(&user)
-	//if err != nil {
-	//	return 0, err
-	//}
-	//
-	//return user, nil
+	if err != nil && userId != 0 {
+		return 0, err
+	}
+	return userId, nil
 }
 
 // CountUserId 通过用户id判断用户是否存在
 func CountUserId(userId int64) (int64, error) {
 	var count int64
 
-	err := db.Select("id").Where("id=?", userId).Count(&count).Error
+	err := db.Model(&model.User{}).Select("id").Where("id=?", userId).Count(&count).Error
 	return count, err
 	//count, err := dal.User.
 	//	Select(dal.User.ID).
@@ -55,7 +53,7 @@ func CountUserId(userId int64) (int64, error) {
 func GetUserData(userId int64) (model.User, error) {
 	var user model.User
 
-	err := db.Where("id=?", userId).Scan(&user).Error
+	err := db.Model(&model.User{}).Where("id=?", userId).Scan(&user).Error
 
 	return user, err
 	//err := dal.User.Where(dal.User.ID.Eq(userId)).Scan(&user)
@@ -70,7 +68,7 @@ func GetUserData(userId int64) (model.User, error) {
 func GetPWDByName(username string) (string, error) {
 	var pwd string
 
-	err := db.Select("password").Where("name=?", username).Take(&pwd).Error
+	err := db.Model(&model.User{}).Select("password").Where("name=?", username).Take(&pwd).Error
 
 	//err := dal.User.Select(dal.User.Password).
 	//	Where(dal.User.Name.Eq(username)).
@@ -85,7 +83,7 @@ func GetPWDByName(username string) (string, error) {
 func GetUserById(userId int64) (model.User, error) {
 	var user model.User
 
-	err := db.Where("id=?", userId).Scan(&user).Error
+	err := db.Model(&model.User{}).Where("id=?", userId).Scan(&user).Error
 
 	return user, err
 	//err := dal.User.Where(dal.User.ID.Eq(userId)).Scan(&user)
@@ -98,7 +96,7 @@ func GetUserById(userId int64) (model.User, error) {
 func GetUserListByIds(ids []int64) ([]model.User, error) {
 	var user []model.User
 
-	err := db.Where("id IN ?", ids).Find(&user).Error
+	err := db.Model(&model.User{}).Where("id IN ?", ids).Find(&user).Error
 
 	return user, err
 	//err := dal.User.Where(dal.User.ID.In(ids...)).Scan(&user)

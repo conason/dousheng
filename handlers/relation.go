@@ -10,11 +10,11 @@ import (
 	"strconv"
 )
 
-type FriendUser struct {
-	user    model.User `json:"user"`
-	message string     `json:"message"`
-	msgType int64      `json:"msgType"`
-}
+//type FriendUser struct {
+//	user    model.User `json:"user"`
+//	message string     `json:"message"`
+//	msgType int64      `json:"msgType"`
+//}
 
 type DouyinRelationActionResponse struct {
 	StatusCode int32  `protobuf:"varint,1,opt,name=status_code,json=statusCode,proto3" json:"status_code,omitempty"`   // 状态码，0-成功，其他值-失败

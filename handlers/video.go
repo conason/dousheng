@@ -7,29 +7,28 @@ import (
 	"dousheng/service/serviceImpl"
 	"dousheng/utils"
 	"encoding/json"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"
 	"net/http"
 	"strconv"
 )
 
-type Video struct {
-	ID            int64  `json:"id"`             // 视频id
-	User          User   `json:"author"`         // 视频作者
-	PlayURL       string `json:"play_url"`       // 视频URL
-	CoverURL      string `json:"cover_url"`      // 封面URL
-	FavoriteCount int32  `json:"favorite_count"` // 点赞总数
-	CommentCount  int32  `json:"comment_count"`  // 评论总数
-	IsFavorite    bool   `json:"is_favorite"`    // 是否点赞
-	Title         string `json:"title"`          // 视频标题
-}
+//type Video struct {
+//	ID            int64  `json:"id"`             // 视频id
+//	User          User   `json:"author"`         // 视频作者
+//	PlayURL       string `json:"play_url"`       // 视频URL
+//	CoverURL      string `json:"cover_url"`      // 封面URL
+//	FavoriteCount int32  `json:"favorite_count"` // 点赞总数
+//	CommentCount  int32  `json:"comment_count"`  // 评论总数
+//	IsFavorite    bool   `json:"is_favorite"`    // 是否点赞
+//	Title         string `json:"title"`          // 视频标题
+//}
 
 type DouyinFeedResponse struct {
-	StatusCode int32   `protobuf:"varint,1,opt,name=status_code,json=statusCode,proto3" json:"status_code,omitempty"`   // 状态码，0-成功，其他值-失败
-	StatusMsg  string  `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg,proto3,oneof" json:"status_msg,omitempty"` // 返回状态描述
-	VideoList  []Video `protobuf:"bytes,3,rep,name=video_list,json=videoList,proto3" json:"video_list,omitempty"`       // 视频列表
-	NextTime   int64   `protobuf:"varint,4,opt,name=next_time,json=nextTime,proto3,oneof" json:"next_time,omitempty"`   // 本次返回的视频中，发布最早的时间，作为下次请求时的latest_time
+	StatusCode int32         `protobuf:"varint,1,opt,name=status_code,json=statusCode,proto3" json:"status_code,omitempty"`   // 状态码，0-成功，其他值-失败
+	StatusMsg  string        `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg,proto3,oneof" json:"status_msg,omitempty"` // 返回状态描述
+	VideoList  []model.Video `protobuf:"bytes,3,rep,name=video_list,json=videoList,proto3" json:"video_list,omitempty"`       // 视频列表
+	NextTime   int64         `protobuf:"varint,4,opt,name=next_time,json=nextTime,proto3,oneof" json:"next_time,omitempty"`   // 本次返回的视频中，发布最早的时间，作为下次请求时的latest_time
 }
 
 type DouyinPublishActionResponse struct {
@@ -38,9 +37,9 @@ type DouyinPublishActionResponse struct {
 }
 
 type DouyinPublishListResponse struct {
-	StatusCode int32   `protobuf:"varint,1,opt,name=status_code,json=statusCode,proto3" json:"status_code,omitempty"`   // 状态码，0-成功，其他值-失败
-	StatusMsg  string  `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg,proto3,oneof" json:"status_msg,omitempty"` // 返回状态描述
-	VideoList  []Video `protobuf:"bytes,3,rep,name=video_list,json=videoList,proto3" json:"video_list,omitempty"`       // 用户发布的视频列表
+	StatusCode int32         `protobuf:"varint,1,opt,name=status_code,json=statusCode,proto3" json:"status_code,omitempty"`   // 状态码，0-成功，其他值-失败
+	StatusMsg  string        `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg,proto3,oneof" json:"status_msg,omitempty"` // 返回状态描述
+	VideoList  []model.Video `protobuf:"bytes,3,rep,name=video_list,json=videoList,proto3" json:"video_list,omitempty"`       // 用户发布的视频列表
 }
 
 func Feed(c *gin.Context) {
@@ -81,7 +80,7 @@ func Feed(c *gin.Context) {
 	}
 	// redis 返回为空
 	if len(redisVideos) <= 0 {
-		fmt.Println("yse")
+		//fmt.Println("yse")
 		redisVideos, err = utils.Redis.ZRevRange(utils.Ctx, config.VIDEOSKEY, timestamp, 0).Result()
 		if err != nil {
 			//log.Println(err)
@@ -94,10 +93,21 @@ func Feed(c *gin.Context) {
 			return
 		}
 	}
-	// 返回视频最早时间戳
-	if redisVideos == nil {
+	// video缓存为空的情况
+	if len(redisVideos) <= 0 {
+		c.JSON(http.StatusOK, DouyinFeedResponse{
+			StatusCode: -1,
+			StatusMsg:  "no video",
+			VideoList:  nil,
+			NextTime:   timestamp,
+		})
 		return
 	}
+	// 返回视频最早时间戳
+	//if redisVideos == nil {
+	//	return
+	//}
+	//print("redisVideo:", redisVideos)
 	score, err := utils.Redis.ZScore(utils.Ctx, config.VIDEOSKEY, redisVideos[0]).Result()
 	if err != nil {
 		utils.ResolveError(err)
@@ -110,7 +120,7 @@ func Feed(c *gin.Context) {
 	if len > config.N {
 		len = config.N
 	}
-	videoData := make([]Video, len)
+	videoData := make([]model.Video, len)
 	for i := 0; i < len; i++ {
 		err = json.Unmarshal([]byte(redisVideos[i]), &videoData[i])
 		if err != nil {
@@ -230,28 +240,28 @@ func PublishList(ctx *gin.Context) {
 		})
 	}
 
-	len := len(videos)
+	//len := len(videos)
 	//user, _ := serviceImpl.GetUserById(userId)
-	videoList := make([]Video, len)
-	for i := 0; i < len; i++ {
-		videoList[i] = Video{
-			ID: videos[i].ID,
-			//User:          user,
-			PlayURL:       videos[i].PlayURL,
-			CoverURL:      videos[i].CoverURL,
-			FavoriteCount: videos[i].FavoriteCount,
-			CommentCount:  videos[i].CommentCount,
-			Title:         videos[i].Title,
-		}
-	}
+	//videoList := make([]Video, len)
+	//for i := 0; i < len; i++ {
+	//	videoList[i] = Video{
+	//		ID: videos[i].ID,
+	//		User:          user,
+	//		PlayURL:       videos[i].PlayURL,
+	//		CoverURL:      videos[i].CoverURL,
+	//		FavoriteCount: videos[i].FavoriteCount,
+	//		CommentCount:  videos[i].CommentCount,
+	//		Title:         videos[i].Title,
+	//	}
+	//}
 	ctx.JSON(http.StatusOK, DouyinPublishListResponse{
 		StatusCode: 0,
 		StatusMsg:  "get publish_list successfully",
-		VideoList:  videoList,
+		VideoList:  videos,
 	})
 }
 
-func IfLoginTransVideos(videoData []Video, userId int64) ([]Video, error) {
+func IfLoginTransVideos(videoData []model.Video, userId int64) ([]model.Video, error) {
 	for i := 0; i < len(videoData); i++ {
 		//是否点赞
 		isFav, err := dao.IsFav(userId, videoData[i].ID)
@@ -280,25 +290,8 @@ func TransVideos(videoData []model.Video) error {
 		if err != nil {
 			utils.ResolveError(err)
 		}
-		user := User{
-			ID:              userData.ID,
-			Name:            userData.Name,
-			FollowCount:     userData.FollowCount,
-			FollowerCount:   userData.FollowerCount,
-			BackgroundImage: userData.BackgroundImage,
-			Signature:       userData.Signature,
-			TotalFavorited:  userData.TotalFavorited,
-			WorkCount:       userData.WorkCount,
-			FavoriteCount:   userData.FavoriteCount,
-		}
-		video := Video{
-			ID:            videoData[i].ID,
-			User:          user,
-			PlayURL:       videoData[i].PlayURL,
-			CoverURL:      videoData[i].CoverURL,
-			FavoriteCount: videoData[i].FavoriteCount,
-			CommentCount:  videoData[i].CommentCount,
-			Title:         videoData[i].Title,
+		video := model.Video{
+			User: userData,
 		}
 		// JSON
 		videoJSON, err := json.Marshal(&video)
@@ -323,24 +316,14 @@ func addCache(userId int64) error {
 	if err != nil {
 		return err
 	}
-	daoUser, err := dao.GetUserById(userId)
+	user, err := dao.GetUserById(userId)
 	if err != nil {
 		return err
 	}
 
-	video := Video{
-		ID: daoVideo.ID,
-		User: User{
-			ID:              daoUser.ID,
-			Name:            daoUser.Name,
-			FollowCount:     daoUser.FollowCount,
-			FollowerCount:   daoUser.FollowerCount,
-			BackgroundImage: daoUser.BackgroundImage,
-			Signature:       daoUser.Signature,
-			TotalFavorited:  daoUser.TotalFavorited,
-			WorkCount:       daoUser.WorkCount,
-			FavoriteCount:   daoUser.FavoriteCount,
-		},
+	video := model.Video{
+		ID:            daoVideo.ID,
+		User:          user,
 		PlayURL:       daoVideo.PlayURL,
 		CoverURL:      daoVideo.CoverURL,
 		FavoriteCount: daoVideo.FavoriteCount,

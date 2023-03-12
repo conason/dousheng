@@ -6,7 +6,7 @@ import (
 
 func Fav(favorite model.Favorite) error {
 	var fav model.Favorite
-	err := db.Where("video_id =? AND user_id = ?", favorite.VideoID, favorite.UserID).Scan(&fav).Error
+	err := db.Model(&model.Favorite{}).Where("video_id =? AND user_id = ?", favorite.VideoID, favorite.UserID).Scan(&fav).Error
 	if err == nil {
 		return err
 	}
@@ -16,7 +16,7 @@ func Fav(favorite model.Favorite) error {
 		return err
 	}
 
-	err = db.Create(&favorite).Error
+	err = db.Model(&model.Favorite{}).Create(&favorite).Error
 	return err
 	//err := dal.Favorite.Where(dal.Favorite.VideoID.Eq(favorite.VideoID), dal.Favorite.UserID.Eq(favorite.UserID)).Scan(&fav)
 	//if err != nil {

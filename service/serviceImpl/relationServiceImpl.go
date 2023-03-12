@@ -10,13 +10,13 @@ func SubAction(userId, upId, actionType int64) error {
 	relation := model.Relation{
 		FollowerID:  userId,
 		FollowingID: upId,
-		Isdeleted:   0,
+		IsDeleted:   0,
 		CreateTime:  time.Now(),
 	}
 	var count = int64(1)
 	if actionType == 2 {
 		count = -1
-		relation.Isdeleted = 1
+		relation.IsDeleted = 1
 		//err := dao.RelationSave(relation)
 		//if err != nil {
 		//	return err

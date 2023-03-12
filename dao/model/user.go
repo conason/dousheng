@@ -17,7 +17,7 @@ type User struct {
 	FavoriteCount   int32     `gorm:"column:favorite_count" json:"favorite_count"`                              // 点赞数量
 	Password        string    `gorm:"column:password" json:"password"`                                          // 密码
 	CreateTime      time.Time `gorm:"column:create_time;not null;default:CURRENT_TIMESTAMP" json:"create_time"` // 创建时间
-	IsFowllow       bool      `json:"is_follow"`                                                                // 是否关注
+	IsFowllow       bool      `gorm:"-" json:"is_follow"`                                                       // 是否关注
 }
 
 // TableName User's table name
