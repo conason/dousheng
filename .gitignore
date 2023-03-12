@@ -16,8 +16,8 @@
 # vendor/
 
 #
-#=======
-#>>>>>>> conason-gin
+# =======
+# >>>>>>> conason-gin
 /config
 /dao/build
 /dao/init.go
