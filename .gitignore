@@ -15,9 +15,6 @@
 # Dependency directories (remove the comment below to include it)
 # vendor/
 
-#
-# =======
-# >>>>>>> conason-gin
-/config
+/config/config.go
 /dao/build
 /dao/init.go

@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="10b93ea2-0b3e-4a53-825a-6caa710396b6" name="Changes" comment="removed grom gen">
+    <list default="true" id="10b93ea2-0b3e-4a53-825a-6caa710396b6" name="Changes" comment="config gitignore">
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -205,7 +205,8 @@
     <MESSAGE value="gitignore change" />
     <MESSAGE value="config updata" />
     <MESSAGE value="removed grom gen" />
-    <option name="LAST_COMMIT_MESSAGE" value="removed grom gen" />
+    <MESSAGE value="config gitignore" />
+    <option name="LAST_COMMIT_MESSAGE" value="config gitignore" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
